@@ -12,23 +12,27 @@
 <body>
   <header>
     <nav>
-      <h1><a href="/">Restaurant Reviews</a></h1>
+      <h1>
+          <a href="/">Karla's Restaurant Reviews</a>
+      </h1>
     </nav>
   </header>
 
   <main id="maincontent">
-    <section id="map-container">
+    <section id="map-container" aria-labelledby="map-aria-description" role="application">
       <div id="map"></div>
     </section>
     <section>
       <div class="filter-options">
         <h2>Filter Results</h2>
-        <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
-          <option value="all">All Neighborhoods</option>
-        </select>
-        <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
-          <option value="all">All Cuisines</option>
-        </select>
+          <div class="filter-facets">
+              <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()" aria-labelledby="neighborhoods-label">
+                <option value="all">All Neighborhoods</option>
+              </select>
+              <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()" aria-labelledby="cuisines-label">
+                <option value="all">All Cuisines</option>
+              </select>
+          </div>
       </div>
       <ul id="restaurants-list"></ul>
     </section>
@@ -40,7 +44,10 @@
 
 
   <footer id="footer">
-    Copyright (c) 2018 <a href="/"><strong>Restaurant Reviews Stage 1</strong></a> All Rights Reserved.
+    Copyright (c) 2018 
+      <a href="/">
+        <strong>Restaurant Reviews Stage 1</strong>
+      </a> All Rights Reserved.
   </footer>
 
 </body>
