@@ -8,14 +8,61 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 8000 // Change this to your server port
-    return `http://localhost:${port}/data/restaurants.json`;
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/restaurants`;
   }
 
   /**
    * Fetch all restaurants.
    */
-  static fetchRestaurants(callback) {
+   
+  // Fetch request
+  static fetchRestaurants(callback){
+    let fetchURL;
+    fetchURL = DBHelper.DATABASE_URL;
+    fetch(fetchURL).then(function(response) {
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+      return response.json();
+    }).then(function(response) {
+      const restaurants = response;
+      //console.log("restaurants: " + JSON.stringify(restaurants));
+      callback(null, restaurants);
+    }).catch(function(error) {
+      callback(error, null);
+    });
+  }
+  /*
+ static fetchRestaurants(callback){
+    // handle fetch success
+    function fetchRestaurants(response) {
+          const restaurants = response;
+          console.log("restaurants JSON: ", restaurants);
+          callback(null, restaurants);
+    };
+
+    // handle fetch error
+    function updateUIError() {
+        const error = (`Request failed. Returned status of` + error);
+        callback(error, null);
+    }
+
+    let fetchURL;
+    fetchURL = DBHelper.DATABASE_URL;
+    fetch(fetchURL).then(function(response) {
+    if (!response.ok) {
+      throw Error(response.statusText);
+    }
+    return response.json();
+    }).then(function(response) {
+      fetchRestaurants(response);
+    }).catch(function(error) {
+      
+    });
+    
+  }*/
+  /*static fetchRestaurants(callback) {
     let xhr = new XMLHttpRequest();
     xhr.open('GET', DBHelper.DATABASE_URL);
     xhr.onload = () => {
@@ -30,7 +77,7 @@ class DBHelper {
     };
     xhr.send();
   }
-
+*/
   /**
    * Fetch a restaurant by its ID.
    */
@@ -150,23 +197,16 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
+    if(restaurant.photograph == undefined)  {
+      return ('/img/na.png')
+    };
     return (`/img/${restaurant.photograph}`);
   }
 
   /**
    * Map marker for a restaurant.
    */
-   static mapMarkerForRestaurant(restaurant, map) {
-    // https://leafletjs.com/reference-1.3.0.html#marker  
-    const marker = new L.marker([restaurant.latlng.lat, restaurant.latlng.lng],
-      {title: restaurant.name,
-      alt: restaurant.name,
-      url: DBHelper.urlForRestaurant(restaurant)
-      })
-      marker.addTo(newMap);
-    return marker;
-  } 
-  /* static mapMarkerForRestaurant(restaurant, map) {
+  static mapMarkerForRestaurant(restaurant, map) {
     const marker = new google.maps.Marker({
       position: restaurant.latlng,
       title: restaurant.name,
@@ -175,7 +215,6 @@ class DBHelper {
       animation: google.maps.Animation.DROP}
     );
     return marker;
-  } */
+  }
 
 }
-
