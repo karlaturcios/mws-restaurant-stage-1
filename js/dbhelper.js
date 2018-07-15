@@ -17,9 +17,14 @@ class DBHelper {
    */
    
   // Fetch request
-  static fetchRestaurants(callback){
+  static fetchRestaurants(callback, id){
     let fetchURL;
-    fetchURL = DBHelper.DATABASE_URL;
+    if (!id){
+      fetchURL = DBHelper.DATABASE_URL;
+    } else {
+      fetchURL = DBHelper.DATABASE_URL + '/' + id;
+    }
+    
     fetch(fetchURL).then(function(response) {
       if (!response.ok) {
         throw Error(response.statusText);
@@ -198,7 +203,7 @@ class DBHelper {
    */
   static imageUrlForRestaurant(restaurant) {
     if(restaurant.photograph == undefined)  {
-      return ('/img/na.png')
+      return ('/img/na')
     };
     return (`/img/${restaurant.photograph}`);
   }
