@@ -1,0 +1,30 @@
+{
+  "name": "restaurant-reviews-stage-2",
+  "version": "1.0.0",
+  "description": "Restaurant Reviews Stage 2",
+  "private": true,
+  "dependencies": {
+    "webpack-cli": "^3.1.0",
+    "webpack": "^4.16.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "lodash": "^4.17.10"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/karlaturcios/mws-restaurant-stage-1.git"
+  },
+  "author": "Karla Rodriguez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/karlaturcios/mws-restaurant-stage-1/issues"
+  },
+  "homepage": "https://github.com/karlaturcios/mws-restaurant-stage-1#readme"
+}
