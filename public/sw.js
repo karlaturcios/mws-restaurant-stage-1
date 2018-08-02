@@ -1,4 +1,5 @@
 
+
 self.addEventListener('install', function(event) {
   // Perform install steps
   event.waitUntil(
@@ -12,7 +13,6 @@ self.addEventListener('install', function(event) {
           '/js/main.js',
           'js/restaurant_info.js',
           'js/dbhelper.js',
-          'data/restaurants.json',
           'img/',
           'img/1.jpg',
           'img/10.jpg',
