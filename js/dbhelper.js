@@ -1,3 +1,13 @@
+ // open database
+ var dbPromise = idb.open('restaurants-reviews', 1, function(upgradeDb) {
+  switch (upgradeDb.oldVersion) {
+    case 0:
+        // nothing needs to be done here
+    case 1:
+      upgradeDb.createObjectStore('restaurants', {keyPath: 'id'});
+  }
+});
+
 /**
  * Common database helper functions.
  */
@@ -37,7 +47,35 @@ class DBHelper {
     }).catch(function(error) {
       callback(error, null);
     });
+/*
+    dbPromise.then(db => {
+      let tx = db.transaction('restaurants', 'readwrite').objectStore('restaurants')
+        for (const restaurant of restaurants) {
+          tx.put(restaurant)
+        }
+    })
+    dbPromise.then(db => {
+      const tx = db.transaction('restaurants', 'readwrite');
+      tx.objectStore('restaurants').put({
+        id: 123456,
+        data: {foo: "bar"}
+      });
+      return tx.complete;
+    });*/
+    
   }
+
+  //cache restaurants
+  /*
+  dbPromise.then(db => {
+  var tx = db.transaction('restaurants', 'readwrite');
+  var store = tx.objectStore('restaurants').put({
+    id: id,
+    data: json
+  });
+
+})
+  */
   /*
  static fetchRestaurants(callback){
     // handle fetch success
@@ -212,6 +250,16 @@ class DBHelper {
    * Map marker for a restaurant.
    */
   static mapMarkerForRestaurant(restaurant, map) {
+    // https://leafletjs.com/reference-1.3.0.html#marker  
+    const marker = new L.marker([restaurant.latlng.lat, restaurant.latlng.lng],
+      {title: restaurant.name,
+      alt: restaurant.name,
+      url: DBHelper.urlForRestaurant(restaurant)
+      })
+      marker.addTo(newMap);
+    return marker;
+  } 
+  /* static mapMarkerForRestaurant(restaurant, map) {
     const marker = new google.maps.Marker({
       position: restaurant.latlng,
       title: restaurant.name,
@@ -220,6 +268,6 @@ class DBHelper {
       animation: google.maps.Animation.DROP}
     );
     return marker;
-  }
+  } */
 
 }

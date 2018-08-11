@@ -7,7 +7,6 @@ var urlsToCache = [
   '/js/main.js',
   'js/restaurant_info.js',
   'js/dbhelper.js',
-  'data/restaurants.json',
   'img/',
   'img/1.jpg',
   'img/10.jpg',
@@ -55,7 +54,7 @@ self.addEventListener('fetch', function(event) {
           return response;
         }
         return fetch(event.request);
-        console.log(resourceType);
+        //console.log(resourceType);
       }//.catch(() => offlineResponse(opts))
     )
   );
