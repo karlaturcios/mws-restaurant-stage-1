@@ -4,7 +4,7 @@
     case 0:
         // nothing needs to be done here
     case 1:
-      upgradeDb.createObjectStore('restaurants', {keyPath: 'id'});
+      upgradeDb.createObjectStore('restaurantz', {keyPath: 'id'});
   }
 });
 
@@ -27,6 +27,8 @@ class DBHelper {
    */
    
   // Fetch request
+
+
   static fetchRestaurants(callback, id){
     let fetchURL;
     if (!id){
@@ -39,21 +41,28 @@ class DBHelper {
       if (!response.ok) {
         throw Error(response.statusText);
       }
+      // return response.json();
       return response.json();
     }).then(function(response) {
       const restaurants = response;
+      //consol
       //console.log("restaurants: " + JSON.stringify(restaurants));
+      dbPromise.then(db => {
+        console.log(restaurants);
+        let tx = db.transaction('restaurantz', 'readwrite').objectStore('restaurantz')
+          for (const restaurant of restaurants) {
+            tx.put(restaurant)
+          }
+      });
       callback(null, restaurants);
     }).catch(function(error) {
       callback(error, null);
     });
-/*
-    dbPromise.then(db => {
-      let tx = db.transaction('restaurants', 'readwrite').objectStore('restaurants')
-        for (const restaurant of restaurants) {
-          tx.put(restaurant)
-        }
-    })
+
+    
+  }
+
+  /*
     dbPromise.then(db => {
       const tx = db.transaction('restaurants', 'readwrite');
       tx.objectStore('restaurants').put({
@@ -62,9 +71,6 @@ class DBHelper {
       });
       return tx.complete;
     });*/
-    
-  }
-
   //cache restaurants
   /*
   dbPromise.then(db => {

@@ -1,4 +1,5 @@
-var CACHE_NAME = 'my-site-cache-v1';
+var CACHE_NAME = 'my-site-cache-v6';
+
 var urlsToCache = [
   '/',
   '/index.html',
@@ -7,6 +8,8 @@ var urlsToCache = [
   '/js/main.js',
   'js/restaurant_info.js',
   'js/dbhelper.js',
+  'js/idb.js',
+  './sw.js',
   'img/',
   'img/1.jpg',
   'img/10.jpg',
@@ -19,20 +22,10 @@ var urlsToCache = [
   'img/8.jpg',
   'img/8.jpg',
   'img/na.png'
-];/*
-var config = {
-  // …
-  offlineImage: '<svg role="img" aria-labelledby="offline-title"'
-  + 'viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">'
-  + '<title id="offline-title">Offline</title>'
-  + '<g fill="none" fill-rule="evenodd"><path fill=>"#D8D8D8" d="M0 0h400v300H0z"/>'
-  + '<text fill="#9B9B9B" font-family="Times New Roman,Times,serif" font-size="72" font-weight="bold">'
-  + '<tspan x="93" y="172">offline</tspan></text></g></svg>',
-  offlinePage: '/offline/'
-};
-*/
+];
 self.addEventListener('install', function(event) {
   // Perform install steps
+  console.log('Attempting to install service worker and cache static assets');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(function(cache) {
@@ -43,13 +36,15 @@ self.addEventListener('install', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
+  console.log('Fetch event for ', event.request.url);
   event.respondWith(
     caches.match(event.request)
       .then(function(response) {
         // Cache hit - return response
         if (response) {
-          caches.open('my-site-cache-v1').then(function (cache) {
-            cache.put(event.request, responseClone);
+          console.log('Found ', event.request.url, ' in cache');
+          caches.open('my-site-cache-v6').then(function (cache) {
+            cache.put(event.request, response.clone());
           });
           return response;
         }
@@ -59,7 +54,11 @@ self.addEventListener('fetch', function(event) {
     )
   );
 });
-
+self.addEventListener('message', function(event) {
+  if (event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
+});
 
 /*/
 function offlineResponse (resourceType, opts) {
