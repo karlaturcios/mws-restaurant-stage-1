@@ -48,7 +48,6 @@ class DBHelper {
       //consol
       //console.log("restaurants: " + JSON.stringify(restaurants));
       dbPromise.then(db => {
-        console.log(restaurants);
         let tx = db.transaction('restaurantz', 'readwrite').objectStore('restaurantz')
           for (const restaurant of restaurants) {
             tx.put(restaurant)
