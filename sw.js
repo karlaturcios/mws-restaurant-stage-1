@@ -1,4 +1,4 @@
-var staticCacheName = 'my-site-cache-v14';
+var staticCacheName = 'my-site-cache-va';
 
 var urlsToCache = [
   '/',
@@ -23,9 +23,7 @@ var urlsToCache = [
   'img/8.jpg',
   'img/na.png',
   'img/na.jpg',
-  'favicon.ico',
-  'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js',
-  'https://unpkg.com/leaflet@1.3.1/dist/images/marker-icon.png'
+  'favicon.ico'
 ];
 self.addEventListener('install', function(event) {
   // Perform install steps
