@@ -2,7 +2,7 @@
  var dbPromise = idb.open('restaurants-reviews', 1, function(upgradeDb) {
   switch (upgradeDb.oldVersion) {
     case 0:
-        // nothing needs to be done here
+        // nothing 
     case 1:
       upgradeDb.createObjectStore('restaurantz', {keyPath: 'id'});
   }
@@ -27,8 +27,6 @@ class DBHelper {
    */
    
   // Fetch request
-
-
   static fetchRestaurants(callback, id){
     let fetchURL;
     if (!id){
@@ -45,7 +43,6 @@ class DBHelper {
       return response.json();
     }).then(function(response) {
       const restaurants = response;
-      //consol
       //console.log("restaurants: " + JSON.stringify(restaurants));
       dbPromise.then(db => {
         let tx = db.transaction('restaurantz', 'readwrite').objectStore('restaurantz')
@@ -60,72 +57,6 @@ class DBHelper {
 
     
   }
-
-  /*
-    dbPromise.then(db => {
-      const tx = db.transaction('restaurants', 'readwrite');
-      tx.objectStore('restaurants').put({
-        id: 123456,
-        data: {foo: "bar"}
-      });
-      return tx.complete;
-    });*/
-  //cache restaurants
-  /*
-  dbPromise.then(db => {
-  var tx = db.transaction('restaurants', 'readwrite');
-  var store = tx.objectStore('restaurants').put({
-    id: id,
-    data: json
-  });
-
-})
-  */
-  /*
- static fetchRestaurants(callback){
-    // handle fetch success
-    function fetchRestaurants(response) {
-          const restaurants = response;
-          console.log("restaurants JSON: ", restaurants);
-          callback(null, restaurants);
-    };
-
-    // handle fetch error
-    function updateUIError() {
-        const error = (`Request failed. Returned status of` + error);
-        callback(error, null);
-    }
-
-    let fetchURL;
-    fetchURL = DBHelper.DATABASE_URL;
-    fetch(fetchURL).then(function(response) {
-    if (!response.ok) {
-      throw Error(response.statusText);
-    }
-    return response.json();
-    }).then(function(response) {
-      fetchRestaurants(response);
-    }).catch(function(error) {
-      
-    });
-    
-  }*/
-  /*static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
-      }
-    };
-    xhr.send();
-  }
-*/
   /**
    * Fetch a restaurant by its ID.
    */
@@ -264,15 +195,4 @@ class DBHelper {
       marker.addTo(newMap);
     return marker;
   } 
-  /* static mapMarkerForRestaurant(restaurant, map) {
-    const marker = new google.maps.Marker({
-      position: restaurant.latlng,
-      title: restaurant.name,
-      url: DBHelper.urlForRestaurant(restaurant),
-      map: map,
-      animation: google.maps.Animation.DROP}
-    );
-    return marker;
-  } */
-
 }

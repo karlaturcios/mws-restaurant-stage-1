@@ -52,12 +52,6 @@ self.addEventListener('fetch', function(event) {
 function fetchAndCache(url) {
   return fetch(url)
   .then(function(response) {
-    // Check if we received a valid response
-    if (!response.ok) {
-      throw Error(response.statusText);
-      console.log('fetch url not ok');
-      console.log('Response' + response);
-    }
     return caches.open(staticCacheName)
     .then(function(cache) {
       cache.put(url, response.clone());
