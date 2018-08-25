@@ -4,6 +4,7 @@ var urlsToCache = [
   '/',
   '/index.html',
   '/restaurant.html',
+  '/review_form.html',
   '/css/styles.css',
   '/js/main.js',
   'js/restaurant_info.js',
@@ -21,7 +22,6 @@ var urlsToCache = [
   'img/7.jpg',
   'img/8.jpg',
   'img/8.jpg',
-  'img/na.png',
   'img/na.jpg',
   'favicon.ico'
 ];

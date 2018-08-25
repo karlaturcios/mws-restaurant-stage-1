@@ -1,5 +1,10 @@
- // open database
- var dbPromise = idb.open('restaurants-reviews', 1, function(upgradeDb) {
+/*const userNameInput = document.querySelector('#userName');
+const restaurantNameInput = document.querySelector('#restaurantName');
+const ratingSelector = document.querySelector('#rating-select');
+const userCommentsInput = document.querySelector('#userComments');
+const form = document.querySelector('form');*/
+// open database
+var dbPromise = idb.open('restaurants-reviews', 1, function(upgradeDb) {
   switch (upgradeDb.oldVersion) {
     case 0:
         // nothing 

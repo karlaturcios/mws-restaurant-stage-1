@@ -233,7 +233,7 @@ nav h1 a {
   margin: 0;
   font-size: 11pt;
 }
-#restaurants-list li button {
+#restaurants-list li button, .new-review button, #reviews-button button {
   /*background-color: #BB86FC;*/
   background-color: #4a138c;
   /* border-bottom: 3px solid #eee; */
@@ -304,11 +304,14 @@ color: #fff;
   text-transform: uppercase;
 	width: 90%;
 }
-#restaurant-container, #reviews-container {
+#restaurant-container, #reviews-container, #form-container {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
   padding: 30px 40px 30px;
   width: 100%;
+}
+#form-container {
+  height: 700px;
 }
 #reviews-container {
   padding: 30px 40px 80px;
@@ -405,6 +408,16 @@ color: #fff;
 .u-inset-squished-4 {
   padding: 12px 16px;
 } 
+
+/* ====================== Restaurant Review Form ====================== */
+.new-review,  {
+  padding: 20px;
+}
+
+.new-review {
+  background: #ddd;
+}
+
 
 @media only screen and (min-width: 0px) {
   #restaurants-list li {
