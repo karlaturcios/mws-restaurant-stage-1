@@ -220,7 +220,7 @@ class DBHelper {
         //creates objecststoer which holds database restaurantz
         let objectStore = tx.objectStore('restaurantz');
         //passing new item
-        let request = objectStore.add(newItem);
+        let request = objectStore.put(newItem);
                //info if success
         request.onsuccess = () => {
         //once successful clear form since its added to database
