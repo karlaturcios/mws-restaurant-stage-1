@@ -1,5 +1,6 @@
 const nameInput = document.querySelector('#name');
-const restaurantNameInput = document.querySelector('#restaurantName');
+//const restaurantNameInput = document.querySelector('#restaurantName');
+const restaurantNameInput = 3;
 const ratingSelector = document.querySelector('#rating');
 const commentsInput = document.querySelector('#comments');
 const form = document.querySelector('form');
@@ -212,12 +213,12 @@ class DBHelper {
        e.preventDefault();
        console.log("Form hello");
        //holds values in form
-       let newItem = { name: nameInput.value, restaurantName: restaurantNameInput.value, rating: ratingSelector.value, comments: commentsInput.value};
+       let newItem = { id: restaurantNameInput, name: nameInput.value, rating: ratingSelector.value, comments: commentsInput.value};
        console.log(newItem);
        dbPromise.then(db => {
         let tx = db.transaction('restaurantz', 'readwrite')
         //creates objecststoer which holds database restaurantz
-        let objectStore = transaction.objectStore('restaurantz');
+        let objectStore = tx.objectStore('restaurantz');
         //passing new item
         let request = objectStore.add(newItem);
                //info if success
@@ -228,10 +229,10 @@ class DBHelper {
         ratingSelector.value = '';
         commentsInput.value = '';
         };
-        transaction.oncomplete = () => {
-        console.log('Transaction completed on the database so run display data function');
+        tx.oncomplete = () => {
+        console.log('Transaction completed on the database');
         }
-        transaction.onerror = () => {
+        tx.onerror = () => {
         console.log('Transaction NOT completed, error!');
         }
         });
