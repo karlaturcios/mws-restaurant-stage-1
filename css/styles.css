@@ -233,7 +233,7 @@ nav h1 a {
   margin: 0;
   font-size: 11pt;
 }
-#restaurants-list li button, .new-review button, #reviews-button button {
+#restaurants-list li button, .new-review button, #reviews-button button, #reviews-button-container button, #form-container button{
   /*background-color: #BB86FC;*/
   background-color: #4a138c;
   /* border-bottom: 3px solid #eee; */

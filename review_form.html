@@ -32,15 +32,15 @@
       <h1>Create your own review</h1>
         <form class="new-review">
             <div>
-                <label for="userName">Enter your name:</label>
-                <input id="userName" type="text" required>
+                <label for="name">Enter your name:</label>
+                <input id="name" type="text" required>
             </div>
             <div>
                     <label for="restaurantName">Enter the Restaurants name:</label>
                     <input id="restaurantName" type="text" required>
             </div>
             <div>
-                    <select id="rating-select" name="rating" onchange="" aria-label="Rating by Number">
+                    <select id="rating" name="rating" onchange="" aria-label="Rating by Number">
                       <option value="1">Rating: 1</option>
                       <option value="2">Rating: 2</option>
                       <option value="3">Rating: 3</option>
@@ -48,10 +48,10 @@
                     </select>
             </div>
             <div>
-                <label for="userComments">whatever comments you have.</label>
-                <TEXTAREA NAME="userComments" ROWS=3 COLS=30 ></TEXTAREA>
+                <label for="comments">whatever comments you have.</label>
+                <TEXTAREA id="comments" ROWS=3 COLS=30 ></TEXTAREA>
              </div>
-            <button id="addName">Send your review</button>
+            <button id="addReviews">Send your review</button>
         </form>
     </section>
     <!-- end reviews form -->

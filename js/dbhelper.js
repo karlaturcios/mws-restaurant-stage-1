@@ -1,8 +1,8 @@
-/*const userNameInput = document.querySelector('#userName');
+const nameInput = document.querySelector('#name');
 const restaurantNameInput = document.querySelector('#restaurantName');
-const ratingSelector = document.querySelector('#rating-select');
-const userCommentsInput = document.querySelector('#userComments');
-const form = document.querySelector('form');*/
+const ratingSelector = document.querySelector('#rating');
+const commentsInput = document.querySelector('#comments');
+const form = document.querySelector('form');
 // open database
 var dbPromise = idb.open('restaurants-reviews', 1, function(upgradeDb) {
   switch (upgradeDb.oldVersion) {
@@ -12,6 +12,8 @@ var dbPromise = idb.open('restaurants-reviews', 1, function(upgradeDb) {
       upgradeDb.createObjectStore('restaurantz', {keyPath: 'id'});
   }
 });
+
+
 
 /**
  * Common database helper functions.
@@ -200,4 +202,37 @@ class DBHelper {
       marker.addTo(newMap);
     return marker;
   } 
+  
 }
+
+   //when we submit form we add data with this function
+   form.onsubmit = addData;
+   //function that adds data takes event and prevent default to not refresh and new variable to hold values form submission
+   function addData(e) {
+       e.preventDefault();
+       console.log("Form hello");
+       //holds values in form
+       let newItem = { name: nameInput.value, restaurantName: restaurantNameInput.value, rating: ratingSelector.value, comments: commentsInput.value};
+       console.log(newItem);
+       dbPromise.then(db => {
+        let tx = db.transaction('restaurantz', 'readwrite')
+        //creates objecststoer which holds database restaurantz
+        let objectStore = transaction.objectStore('restaurantz');
+        //passing new item
+        let request = objectStore.add(newItem);
+               //info if success
+        request.onsuccess = () => {
+        //once successful clear form since its added to database
+        nameInput.value = '';
+        restaurantNameInput.value = '';
+        ratingSelector.value = '';
+        commentsInput.value = '';
+        };
+        transaction.oncomplete = () => {
+        console.log('Transaction completed on the database so run display data function');
+        }
+        transaction.onerror = () => {
+        console.log('Transaction NOT completed, error!');
+        }
+        });
+   }
