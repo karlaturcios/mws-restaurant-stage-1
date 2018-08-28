@@ -5,22 +5,25 @@ const ratingSelector = document.querySelector('#rating');
 const commentsInput = document.querySelector('#comments');
 const form = document.querySelector('form');
 // open database
-var dbPromise = idb.open('restaurants-reviews', 1, function(upgradeDb) {
+var dbPromise = idb.open('restaurants-reviews', 4, function(upgradeDb) {
   switch (upgradeDb.oldVersion) {
     case 0:
         // nothing 
     case 1:
       upgradeDb.createObjectStore('restaurantz', {keyPath: 'id'});
+      //const submittedReviews = upgradeDB.createObjectStore('reviewz', {keyPath: 'id', autoIncrement: true});
+      //submittedReviews.createIndex('name', 'name', { unique: false });
+      //submittedReviews.createIndex('rating', 'rating', { unique: false });
+      //submittedReviews.createIndex('comments', 'comments', { unique: false });
+      upgradeDb.createObjectStore('reviewz', {keyPath: 'id'});
   }
 });
-
-
 
 /**
  * Common database helper functions.
  */
 class DBHelper {
-
+  
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
@@ -216,9 +219,9 @@ class DBHelper {
        let newItem = { id: restaurantNameInput, name: nameInput.value, rating: ratingSelector.value, comments: commentsInput.value};
        console.log(newItem);
        dbPromise.then(db => {
-        let tx = db.transaction('restaurantz', 'readwrite')
+        let tx = db.transaction('reviewz', 'readwrite')
         //creates objecststoer which holds database restaurantz
-        let objectStore = tx.objectStore('restaurantz');
+        let objectStore = tx.objectStore('reviewz');
         //passing new item
         let request = objectStore.put(newItem);
                //info if success
