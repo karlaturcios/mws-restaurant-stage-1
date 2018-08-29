@@ -1,9 +1,12 @@
 const nameInput = document.querySelector('#name');
 //const restaurantNameInput = document.querySelector('#restaurantName');
-const restaurantNameInput = 3;
+const restaurantNameInput = getParameterByName('id');
+console.log('restaurantNameInput = ' + restaurantNameInput);
+const restaurantId = Number(restaurantNameInput);
+console.log('restaurantId = ' + restaurantId);
 const ratingSelector = document.querySelector('#rating');
 const commentsInput = document.querySelector('#comments');
-const form = document.querySelector('form');
+const formz = document.querySelector('form');
 // open database
 var dbPromise = idb.open('restaurants-reviews', 4, function(upgradeDb) {
   switch (upgradeDb.oldVersion) {
@@ -182,7 +185,13 @@ class DBHelper {
   static urlForRestaurant(restaurant) {
     return (`./restaurant.html?id=${restaurant.id}`);
   }
+  /*
 
+  static urlForReview(restaurant) {
+    return (`./review_form.html?id=${restaurant.id}`);
+    console.log('urlForReview' + urlForReview);
+  }
+*/
   /**
    * Restaurant image URL.
    */
@@ -192,7 +201,8 @@ class DBHelper {
     };
     return (`/img/${restaurant.photograph}`);
   }
-
+  
+  
   /**
    * Map marker for a restaurant.
    */
@@ -210,13 +220,13 @@ class DBHelper {
 }
 
    //when we submit form we add data with this function
-   form.onsubmit = addData;
+  // formz.onsubmit = addData;
    //function that adds data takes event and prevent default to not refresh and new variable to hold values form submission
-   function addData(e) {
-       e.preventDefault();
+   function addData() {
+    //   e.preventDefault();
        console.log("Form hello");
        //holds values in form
-       let newItem = { id: restaurantNameInput, name: nameInput.value, rating: ratingSelector.value, comments: commentsInput.value};
+       let newItem = { id: restaurantId, name: nameInput.value, rating: ratingSelector.value, comments: commentsInput.value};
        console.log(newItem);
        dbPromise.then(db => {
         let tx = db.transaction('reviewz', 'readwrite')
@@ -228,7 +238,6 @@ class DBHelper {
         request.onsuccess = () => {
         //once successful clear form since its added to database
         nameInput.value = '';
-        restaurantNameInput.value = '';
         ratingSelector.value = '';
         commentsInput.value = '';
         };
@@ -240,3 +249,16 @@ class DBHelper {
         }
         });
    }
+/**
+ * Get a parameter by name from page URL.
+ */
+
+function getParameterByName(name, url) {
+  if (!url) url = window.location.href;
+  name = name.replace(/[\[\]]/g, '\\$&');
+  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}

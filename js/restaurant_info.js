@@ -1,6 +1,26 @@
 let restaurant;
 var newMap;
 
+
+/**
+ * Get a parameter by name from page URL.
+ */
+getParameterByName = (name, url) => {
+  if (!url)
+    url = window.location.href;
+  name = name.replace(/[\[\]]/g, '\\$&');
+  const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`),
+    results = regex.exec(url);
+    console.log('results =' + results[2]);
+    const param = results[2];
+    console.log('results const param =' + param);
+  if (!results)
+    return null;
+  if (!results[2])
+    return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
 /**
  * Initialize map as soon as the page is loaded.
  */
@@ -62,6 +82,15 @@ fetchRestaurantFromURL = (callback) => {
 }
 
 /**
+* Restaurant page URL.
+*/
+function urlForRestaurant(param) {
+  return (`./restaurant.html?id=${param}`);
+  }
+
+
+
+/**
  * Create restaurant HTML and add it to the webpage
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
@@ -79,6 +108,40 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
 
+  /*const writeButton = document.getElementById('reviews-button');
+  console.log(writeButton);
+  //writeButton.onclick = "'location.href='review_form.html?id='"  + param;
+  writeButton.innerHTML = "Submit a review";*/
+/*
+  const divButton = document.createElement('div');
+  divdivButton.className = 'reviews-button';
+  append(div);
+
+
+  const name = document.createElement('h2');
+  name.innerHTML = restaurant.name;
+  div.append(name);
+
+  const neighborhood = document.createElement('p');
+  neighborhood.innerHTML = restaurant.neighborhood;
+  div.append(neighborhood);
+
+  const address = document.createElement('p');
+  address.innerHTML = restaurant.address;
+  div.append(address);
+
+  const more = document.createElement('button');
+  more.innerHTML = 'View Details';
+  more.onclick = function() {
+      const url = DBHelper.urlForRestaurant(restaurant);
+      window.location = url;
+     // console.log(restaurant.id);
+  }
+  div.append(more)*/
+
+
+
+
   /*const yourReview = document.getElementById('reviews-button');
   yourReview.onclick = function() {
       const url = DBHelper.urlForRestaurant(restaurant);
@@ -92,6 +155,8 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   // fill reviews
   fillReviewsHTML();
 }
+
+
 
 /**
  * Create restaurant operating hours div and add it to the webpage.
@@ -138,11 +203,25 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
   container.appendChild(title);
-
+  console.log("self.restaurant.id = "  + self.restaurant.id)
   if (!reviews) {
     const noReviews = document.createElement('p');
     noReviews.innerHTML = 'No reviews yet!';
     container.appendChild(noReviews);
+    const div2 = document.createElement('div');
+    div2.className = 'reviews-button-container';
+    container.append(div2);
+    const writeLink = document.createElement('button');
+    writeLink.className = 'reviews-button';
+    writeLink.innerHTML = 'Write a Review';
+    writeLink.onclick = function() {
+        const urlLink = `./review_form.html?id=${self.restaurant.id}`;
+      //  const urlLink = urlForReview(param);
+        console.log('urlLink =' + urlLink);
+        window.location = urlLink;
+       // console.log(restaurant.id);
+    }
+    div2.append(writeLink)
     return;
   }
   const ul = document.getElementById('reviews-list');
@@ -184,21 +263,5 @@ fillBreadcrumb = (restaurant=self.restaurant) => {
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);
-}
-
-/**
- * Get a parameter by name from page URL.
- */
-getParameterByName = (name, url) => {
-  if (!url)
-    url = window.location.href;
-  name = name.replace(/[\[\]]/g, '\\$&');
-  const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`),
-    results = regex.exec(url);
-  if (!results)
-    return null;
-  if (!results[2])
-    return '';
-  return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
