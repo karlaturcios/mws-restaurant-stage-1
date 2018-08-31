@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Normalize.css for better cross-browser consistency -->
+  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+  <!-- Main CSS file -->
+  <link rel="stylesheet" href="css/styles.css" type="text/css">
+  <title>Submit a Review</title>
+  <meta name="theme-color" content="#3700B3"/>
+</head>
+
+<body class="inside">
+  <!-- Beginning header -->
+  <header>
+    <!-- Beginning nav -->
+    <nav>
+      <h1><a href="/">Restaurant Reviews</a></h1>
+    </nav>
+    <!-- Beginning breadcrumb -->
+    <ul id="breadcrumb" aria-label="breadcrumb" role="navigation">
+      <li><a href="/">Home</a></li><li><a href="/">Submit a review</a></li>
+    </ul>
+    <!-- End breadcrumb -->
+    <!-- End nav -->
+  </header>
+  <!-- End header -->
+
+
+    
+    <!-- Beginning reviews form -->
+    <section id="form-container">
+      <h1>Create your own review</h1>
+        <form class="new-review">
+            <div>
+                <label for="name">Enter your name:</label>
+                <input id="name" type="text" required>
+            </div>
+            <!-- div>
+                    <label for="restaurantName">Enter the Restaurants name:</label>
+                    <input id="restaurantName" type="text" required>
+            </div -->
+            <div>
+                    <select id="rating" name="rating" onchange="" aria-label="Rating by Number">
+                      <option value="1">Rating: 1</option>
+                      <option value="2">Rating: 2</option>
+                      <option value="3">Rating: 3</option>
+                      <option value="4">Rating: 4</option>
+                    </select>
+            </div>
+            <div>
+                <label for="comments">whatever comments you have.</label>
+                <TEXTAREA id="comments" ROWS=3 COLS=30 ></TEXTAREA>
+             </div>
+            <button onclick="return addData();" >Send your review</button>
+        </form>
+    </section>
+    <!-- end reviews form -->
+
+
+
+  <!-- Beginning footer -->
+  <footer id="footer">
+    Copyright (c) 2018 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+  </footer>
+  <!-- End footer -->
+  
+  <!-- Beginning scripts -->
+  
+  <script src="js/app.js"></script>
+  <script type="text/javascript" src="js/idb.js"></script>
+  <!-- Database helpers -->
+  <script type="text/javascript" src="js/dbhelper.js"></script>
+  <!-- Main javascript file 
+  <script type="application/javascript" charset="utf-8" src="js/main.js"></script>-->
+  
+  <!-- Google Maps -->
+ <!--  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_tKbW6A5pQ-eupxI56myUnHLqYCzOjKo&libraries=places&callback=initMap"></script> -->
+  <!-- End scripts -->
+  <script>
+              function send(text) {
+
+var listen = document.getElementById("clair");
+
+recognition.stop();
+
+var text = text;
+
+var xhr = new XMLHttpRequest();
+var url = baseUrl + "query?v=20150910";
+xhr.open("POST", url, true);
+xhr.setRequestHeader("Content-Type", "application/json");
+xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken );
+
+xhr.send(JSON.stringify({ query: text, lang: "en-US", sessionId: "somerandomthing" }));
+
+xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+        var json = JSON.parse(xhr.responseText);
+        console.log(json.result.fulfillment.speech);
+
+        var utterThis = new SpeechSynthesisUtterance(json.result.fulfillment.speech);
+        synth.speak(utterThis);
+
+        var main = document.getElementById('container');
+        main.innerHTML = "<h1 id='msg' class='item-1'>"+ json.result.fulfillment.speech +"</h1>";
+
+        setInterval(function(){
+            recognition.start();
+            main.innerHTML = " ";
+            listen.classList.add("listening");
+        }, 13000);
+
+    } else {
+        console.log(xhr.responseText)
+    }
+};
+
+console.log("Loading...");
+}
+    window.addEventListener('load', function () {
+
+        var listen = document.getElementById("clair");
+
+        recognition.onresult = function (event) {
+            var text = "";
+            for (var i = event.resultIndex; i < event.results.length; ++i) {
+                text += event.results[i][0].transcript;
+            }
+            send(text);
+
+            listen.classList.remove("listening");
+        }
+    });</script>
+</body>
+
+</html>
+
+
+

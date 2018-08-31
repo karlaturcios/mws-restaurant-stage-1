@@ -7,6 +7,7 @@ console.log('restaurantId = ' + restaurantId);
 const ratingSelector = document.querySelector('#rating');
 const commentsInput = document.querySelector('#comments');
 const formz = document.querySelector('form');
+let idReview = 10;
 // open database
 var dbPromise = idb.open('restaurants-reviews', 4, function(upgradeDb) {
   switch (upgradeDb.oldVersion) {
@@ -34,6 +35,16 @@ class DBHelper {
   static get DATABASE_URL() {
     const port = 1337 // Change this to your server port
     return `http://localhost:${port}/restaurants`;
+  }
+
+/**
+   * Database URL.
+   * Change this to restaurants.json file location on your server.
+   */
+  static get DATABASE_URL_REVIEWS() {
+    const portreviews = 1337 // Change this to your server port
+    return `http://localhost:${port}/reviews`;
+
   }
 
   /**
@@ -180,6 +191,44 @@ class DBHelper {
   }
 
   /**
+   * Fetch all reviews.
+   */
+   
+  // Fetch request
+  static fetchReviews(callback, id){
+    let fetchReviewURL;
+    if (!id){
+      fetchReviewURL = DBHelper.DATABASE_URL_REVIEWS;
+      console.log(fetchReviewURL);
+    } else {
+      fetchReviewURL = DBHelper.DATABASE_URL_REVIEWS + '/' + id;
+      console.log(fetchReviewURL);
+    }
+    /*
+    fetch(fetchURL).then(function(response) {
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+      // return response.json();
+      return response.json();
+    }).then(function(response) {
+      const restaurants = response;
+      //console.log("restaurants: " + JSON.stringify(restaurants));
+      dbPromise.then(db => {
+        let tx = db.transaction('restaurantz', 'readwrite').objectStore('restaurantz')
+          for (const restaurant of restaurants) {
+            tx.put(restaurant)
+          }
+      });
+      callback(null, restaurants);
+    }).catch(function(error) {
+      callback(error, null);
+    });*/
+
+    
+  }
+
+  /**
    * Restaurant page URL.
    */
   static urlForRestaurant(restaurant) {
@@ -226,8 +275,11 @@ class DBHelper {
     //   e.preventDefault();
        console.log("Form hello");
        //holds values in form
-       let newItem = { id: restaurantId, name: nameInput.value, rating: ratingSelector.value, comments: commentsInput.value};
+       let newItem = { id: idReview, restaurant_id: restaurantId, name: nameInput.value, rating: ratingSelector.value, comments: commentsInput.value};
        console.log(newItem);
+      console.log(idReview);
+      idReview ++; 
+      console.log('again = ' + idReview);
        dbPromise.then(db => {
         let tx = db.transaction('reviewz', 'readwrite')
         //creates objecststoer which holds database restaurantz
