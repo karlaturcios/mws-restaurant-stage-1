@@ -42,7 +42,7 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL_REVIEWS() {
-    const portreviews = 1337 // Change this to your server port
+    const port = 1337 // Change this to your server port
     return `http://localhost:${port}/reviews`;
 
   }
@@ -193,7 +193,8 @@ class DBHelper {
   /**
    * Fetch all reviews.
    */
-   
+
+
   // Fetch request
   static fetchReviews(callback, id){
     let fetchReviewURL;
@@ -201,31 +202,29 @@ class DBHelper {
       fetchReviewURL = DBHelper.DATABASE_URL_REVIEWS;
       console.log(fetchReviewURL);
     } else {
-      fetchReviewURL = DBHelper.DATABASE_URL_REVIEWS + '/' + id;
+      fetchReviewURL = DBHelper.DATABASE_URL_REVIEWS + '/?restaurant_id=' + id;
       console.log(fetchReviewURL);
     }
-    /*
-    fetch(fetchURL).then(function(response) {
+    fetch(fetchReviewsURL).then(function(response) {
       if (!response.ok) {
         throw Error(response.statusText);
       }
-      // return response.json();
       return response.json();
     }).then(function(response) {
-      const restaurants = response;
-      //console.log("restaurants: " + JSON.stringify(restaurants));
+      const reviews = response;
+      console.log("reviews: " + JSON.stringify(reviews));
       dbPromise.then(db => {
-        let tx = db.transaction('restaurantz', 'readwrite').objectStore('restaurantz')
-          for (const restaurant of restaurants) {
-            tx.put(restaurant)
+        let txrvz = db.transaction('reviewz', 'readwrite').objectStore('reviewz')
+          for (const review of reviews) {
+            txrvz.put(review)
+            console.log("Putting each review from reviews")
           }
       });
-      callback(null, restaurants);
+      callback(null, reviews);
     }).catch(function(error) {
       callback(error, null);
-    });*/
+    });
 
-    
   }
 
   /**
