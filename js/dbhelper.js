@@ -9,12 +9,12 @@ const commentsInput = document.querySelector('#comments');
 const formz = document.querySelector('form');
 let idReview = 10;
 // open database
-var dbPromise = idb.open('restaurants-reviews', 4, function(upgradeDb) {
+var dbPromise = idb.open('restaurants-reviews', 6, function(upgradeDb) {
   switch (upgradeDb.oldVersion) {
     case 0:
-        // nothing 
+    upgradeDb.createObjectStore('restaurantz', {keyPath: 'id'});
     case 1:
-      upgradeDb.createObjectStore('restaurantz', {keyPath: 'id'});
+      
       //const submittedReviews = upgradeDB.createObjectStore('reviewz', {keyPath: 'id', autoIncrement: true});
       //submittedReviews.createIndex('name', 'name', { unique: false });
       //submittedReviews.createIndex('rating', 'rating', { unique: false });
@@ -194,7 +194,7 @@ class DBHelper {
    * Fetch all reviews.
    */
 
-
+/*
   // Fetch request
   static fetchReviews(callback, id){
     let fetchReviewURL;
@@ -225,7 +225,27 @@ class DBHelper {
       callback(error, null);
     });
 
+  }*/
+
+  /**
+   * Fetch a review by its ID.
+   */
+  static fetchReviewsById(id, callback) {
+    // fetch all reviews for a restaurant by id
+    console.log('rest id: ' + id);
+    const fetchReviewURL = DBHelper.DATABASE_URL_REVIEWS + '/?restaurant_id=' + id;
+    fetch(fetchReviewURL, {method: 'GET'}).then(function(response) {
+      if (!response.ok) {
+        console.log('Problem');
+      }
+      console.log('response');
+      console.log(response.json());//console out put of review by rest id,
+    });
   }
+
+
+	
+  
 
   /**
    * Restaurant page URL.
@@ -277,6 +297,7 @@ class DBHelper {
        let newItem = { id: idReview, restaurant_id: restaurantId, name: nameInput.value, rating: ratingSelector.value, comments: commentsInput.value};
        console.log(newItem);
       console.log(idReview);
+      //looking to make initial value match number of existing reviews
       idReview ++; 
       console.log('again = ' + idReview);
        dbPromise.then(db => {
