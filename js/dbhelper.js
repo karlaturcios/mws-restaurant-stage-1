@@ -230,6 +230,7 @@ class DBHelper {
   /**
    * Fetch a review by its ID.
    */
+  /*
   static fetchReviewsById(id, callback) {
     // fetch all reviews for a restaurant by id
     console.log('rest id: ' + id);
@@ -242,9 +243,22 @@ class DBHelper {
       console.log(response.json());//console out put of review by rest id,
     });
   }
+*/
 
+  static fetchReviewsById(id, callback) {
+    // fetch all reviews for a restaurant by id
+    console.log('rest id: ' + id);
+    const fetchReviewURL = DBHelper.DATABASE_URL_REVIEWS + '/?restaurant_id=' + id;
 
-	
+    fetch(fetchReviewURL, {method: 'GET'}).then(function(response) {
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+      return(response.json());
+    }).then(function(response) {
+      return response.json();
+    }).catch(error => callback(error, null));
+  }
   
 
   /**

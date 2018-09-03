@@ -204,7 +204,22 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
   container.appendChild(title);
+  const div2 = document.createElement('div');
+  div2.className = 'reviews-button-container';
+  container.append(div2);
+  const writeLink = document.createElement('button');
+  writeLink.className = 'reviews-button';
+  writeLink.innerHTML = 'Write a Review';
+  writeLink.onclick = function() {
+      const urlLink = `./review_form.html?id=${self.restaurant.id}`;
+      //  const urlLink = urlForReview(param);
+        console.log('urlLink =' + urlLink);
+        window.location = urlLink;
+       // console.log(restaurant.id);
+  }
+    div2.append(writeLink)
   console.log("self.restaurant.id = "  + self.restaurant.id)
+  console.log(reviews);
   if (!reviews) {
     const noReviews = document.createElement('p');
     noReviews.innerHTML = 'No reviews yet!';
