@@ -108,45 +108,6 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
 
-  /*const writeButton = document.getElementById('reviews-button');
-  console.log(writeButton);
-  //writeButton.onclick = "'location.href='review_form.html?id='"  + param;
-  writeButton.innerHTML = "Submit a review";*/
-/*
-  const divButton = document.createElement('div');
-  divdivButton.className = 'reviews-button';
-  append(div);
-
-
-  const name = document.createElement('h2');
-  name.innerHTML = restaurant.name;
-  div.append(name);
-
-  const neighborhood = document.createElement('p');
-  neighborhood.innerHTML = restaurant.neighborhood;
-  div.append(neighborhood);
-
-  const address = document.createElement('p');
-  address.innerHTML = restaurant.address;
-  div.append(address);
-
-  const more = document.createElement('button');
-  more.innerHTML = 'View Details';
-  more.onclick = function() {
-      const url = DBHelper.urlForRestaurant(restaurant);
-      window.location = url;
-     // console.log(restaurant.id);
-  }
-  div.append(more)*/
-
-
-
-
-  /*const yourReview = document.getElementById('reviews-button');
-  yourReview.onclick = function() {
-      const url = DBHelper.urlForRestaurant(restaurant);
-      window.location = url;
-  }*/
 
   // fill operating hours
   if (restaurant.operating_hours) {
@@ -154,7 +115,21 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   }
   // fill reviews
   /*fillReviewsHTML();*/
-  DBHelper.fetchReviewsById(restaurant.id, fillReviewsHTML)
+  //DBHelper.fetchReviewsById(restaurant.id, fillReviewsHTML)
+    /**
+   * Fetch a restaurant reviews by its ID.
+   */
+
+
+   DBHelper.fetchReviews((error, reviews) => {
+     if (error) {
+       callback(error, null);
+     } else {
+       const results = reviews.filter(review => review.restaurant_id == restaurant.id);
+       fillReviewsHTML(results);
+     }
+   })
+
 }
 
 
@@ -213,7 +188,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   writeLink.onclick = function() {
       const urlLink = `./review_form.html?id=${self.restaurant.id}`;
       //  const urlLink = urlForReview(param);
-        console.log('urlLink =' + urlLink);
+       // console.log('urlLink =' + urlLink);
         window.location = urlLink;
        // console.log(restaurant.id);
   }

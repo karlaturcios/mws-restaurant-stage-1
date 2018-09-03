@@ -9,7 +9,7 @@ const commentsInput = document.querySelector('#comments');
 const formz = document.querySelector('form');
 let idReview = 10;
 // open database
-var dbPromise = idb.open('restaurants-reviews', 7, function(upgradeDb) {
+var dbPromise = idb.open('restaurants-reviews', 9, function(upgradeDb) {
   switch (upgradeDb.oldVersion) {
     case 0:
     upgradeDb.createObjectStore('restaurantz', {keyPath: 'id'});
@@ -21,7 +21,8 @@ var dbPromise = idb.open('restaurants-reviews', 7, function(upgradeDb) {
       //submittedReviews.createIndex('comments', 'comments', { unique: false });
       upgradeDb.createObjectStore('reviewz', {keyPath: 'id'});
     case 2:
-    upgradeDb.createObjectStore('reviewsStore', {keyPath: 'id'});
+    upgradeDb.createObjectStore('submittedReviews', {keyPath: 'id'});
+    submittedReviews.createIndex("restaurant_id", "restaurant_id");
   }
 });
 
@@ -95,7 +96,7 @@ class DBHelper {
       } else {
         const restaurant = restaurants.find(r => r.id == id);
         if (restaurant) { // Got the restaurant
-          console.log('fetched this rest by id# ' + id + ': ' + JSON.stringify(restaurant));
+          //console.log('fetched this rest by id# ' + id + ': ' + JSON.stringify(restaurant));
           callback(null, restaurant);
         } else { // Restaurant does not exist in the database
           callback('Restaurant does not exist', null);
@@ -194,7 +195,7 @@ class DBHelper {
   }
 
   /**
-   * Fetch all reviews.
+   * Fetch all reviews not working.
    */
 
 /*
@@ -262,7 +263,7 @@ class DBHelper {
       return response.json();
     }).catch(error => callback(error, null));
   }
-  */
+  
  static fetchReviewsById(id, callback) {
   // fetch all reviews for a restaurant by id
   console.log('rest id: ' + id);
@@ -277,7 +278,7 @@ class DBHelper {
     const reviews = response;
     console.log('Reviews for rest #' + id + 'are' + JSON.stringify(reviews));
     dbPromise.then(db => {
-      let reviewstx = db.transaction('reviewsStore', 'readwrite').objectStore('reviewsStore')
+      let reviewstx = db.transaction('submittedReviews', 'readwrite').objectStore('submittedReviews')
         for (const review of reviews) {
           reviewstx.put(review)
           console.log('review: ' + JSON.stringify(review));
@@ -286,7 +287,67 @@ class DBHelper {
     callback(null, reviews);
   }).catch(error => callback(error, null));
 }
+*/
 
+/**
+   * Fetch all reviews.
+   */
+   
+  // Fetch request for reviews
+  static fetchReviews(callback, id){
+    let fetchReviewURL;
+    if (!id){
+      fetchReviewURL = DBHelper.DATABASE_URL_REVIEWS;
+    } else {
+      fetchReviewURL = DBHelper.DATABASE_URL_REVIEWS + '/?restaurant_id=' + id;
+    }
+    
+
+    fetch(fetchReviewURL).then(function(response) {
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+      return response.json();
+    }).then(function(response) {
+        const reviews = response;
+        //console.log('Reviews are' + JSON.stringify(reviews));
+        dbPromise.then(db => {
+         let reviewstx = db.transaction('submittedReviews', 'readwrite').objectStore('submittedReviews')
+        for (const review of reviews) {
+          reviewstx.put(review)
+          console.log('review from fetchreviewURL: ' + JSON.stringify(review));
+        }
+    });
+      callback(null, reviews);
+    }).catch(function(error) {
+      callback(error, null);
+    });
+
+    
+  }
+  /**
+   * Fetch a restaurant reviews by its ID.
+   */
+  /*
+ static fetchReviewsById(id, callback) {
+   console.log('fetchReviewsbyid is id#' + id);
+    DBHelper.fetchReviews((error, reviews) => {
+      if (error) {
+        callback(error, null);
+      } else {
+        //const review = reviews.find(r => r.restaurant_id == restaurant_id);
+        const results = reviews.filter(review => review.restaurant_id == restaurant_id);
+        if (review ) { // Got the restaurant
+          console.log('fetched this review by id# ' + id + ': ' + JSON.stringify(review));
+          //callback(null, review);
+          callback(null, results);
+          console.log('fetchReviewsbyid results' + results);
+        } else { // Restaurant does not exist in the database
+          callback('No reviews exist', null);
+        }
+      }
+    });
+}*/
   /**
    * Restaurant page URL.
    */
