@@ -7,7 +7,7 @@ console.log('restaurantId = ' + restaurantId);
 const ratingSelector = document.querySelector('#rating');
 const commentsInput = document.querySelector('#comments');
 const formz = document.querySelector('form');
-let idReview = 10;
+//let idReview = 0;
 // open database
 var dbPromise = idb.open('restaurants-reviews', 9, function(upgradeDb) {
   switch (upgradeDb.oldVersion) {
@@ -313,9 +313,12 @@ class DBHelper {
         //console.log('Reviews are' + JSON.stringify(reviews));
         dbPromise.then(db => {
          let reviewstx = db.transaction('submittedReviews', 'readwrite').objectStore('submittedReviews')
+         var reviewsAmount = reviews.length;
+         let idReview = reviewsAmount;
+         console.log('idReview: ' + idReview);
         for (const review of reviews) {
           reviewstx.put(review)
-          console.log('review from fetchreviewURL: ' + JSON.stringify(review));
+         // console.log('review from fetchreviewURL: ' + JSON.stringify(review));
         }
     });
       callback(null, reviews);
@@ -393,14 +396,15 @@ class DBHelper {
    //function that adds data takes event and prevent default to not refresh and new variable to hold values form submission
    function addData() {
     //   e.preventDefault();
-       console.log("Form hello");
+        var reviewDate = Math.round((new Date()).getTime()/1000);
+        //idReview ++;
        //holds values in form
-       let newItem = { id: idReview, restaurant_id: restaurantId, name: nameInput.value, rating: ratingSelector.value, comments: commentsInput.value};
-       console.log(newItem);
-      console.log(idReview);
+       let newItem = { id: reviewDate, restaurant_id: restaurantId, name: nameInput.value, rating: ratingSelector.value, comments: commentsInput.value, reviewDate: reviewDate};
+      // console.log(newItem);
+       //console.log(idReview);
       //looking to make initial value match number of existing reviews
-      idReview ++; 
-      console.log('again = ' + idReview);
+      //idReview ++; 
+     // console.log('again = ' + idReview);
        dbPromise.then(db => {
         let tx = db.transaction('reviewz', 'readwrite')
         //creates objecststoer which holds database restaurantz
