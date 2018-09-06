@@ -126,6 +126,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
        callback(error, null);
      } else {
        const results = reviews.filter(review => review.restaurant_id == restaurant.id);
+       //console.log("fetchReviews results filtered: " + JSON.stringify(results));
        fillReviewsHTML(results);
      }
    })
@@ -193,8 +194,8 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
        // console.log(restaurant.id);
   }
     div2.append(writeLink)
-  console.log("self.restaurant.id = "  + self.restaurant.id)
-  console.log(reviews);
+  //console.log("self.restaurant.id = "  + self.restaurant.id)
+  //console.log('fillReviewsHTML called: ' + JSON.stringify(reviews));
   if (!reviews) {
     const noReviews = document.createElement('p');
     noReviews.innerHTML = 'No reviews yet!';
@@ -225,14 +226,16 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
 /**
  * Create review HTML and add it to the webpage.
  */
-createReviewHTML = (review) => {
+const createReviewHTML = (review) => {
+  //console.log('createReview called: ' + JSON.stringify(review));
   const li = document.createElement('li');
   const name = document.createElement('p');
   name.innerHTML = review.name;
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  const submitted = review.createdAt;
+  date.innerHTML = new Date(submitted).toLocaleString();
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -244,7 +247,7 @@ createReviewHTML = (review) => {
   li.appendChild(comments);
 
   return li;
-}
+};
 
 /**
  * Add restaurant name to the breadcrumb navigation menu

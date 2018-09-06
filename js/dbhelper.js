@@ -318,7 +318,7 @@ class DBHelper {
          console.log('idReview: ' + idReview);
         for (const review of reviews) {
           reviewstx.put(review)
-         // console.log('review from fetchreviewURL: ' + JSON.stringify(review));
+          //console.log('review from fetchreviewURL: ' + JSON.stringify(review));
         }
     });
       callback(null, reviews);
@@ -395,16 +395,11 @@ class DBHelper {
   // formz.onsubmit = addData;
    //function that adds data takes event and prevent default to not refresh and new variable to hold values form submission
    function addData() {
+    
     //   e.preventDefault();
         var reviewDate = Math.round((new Date()).getTime()/1000);
-        //idReview ++;
-       //holds values in form
-       let newItem = { id: reviewDate, restaurant_id: restaurantId, name: nameInput.value, rating: ratingSelector.value, comments: commentsInput.value, reviewDate: reviewDate};
-      // console.log(newItem);
-       //console.log(idReview);
-      //looking to make initial value match number of existing reviews
-      //idReview ++; 
-     // console.log('again = ' + idReview);
+       let newItem = { id: reviewDate, restaurant_id: restaurantId, name: nameInput.value, rating: ratingSelector.value, comments: commentsInput.value, createdAt: reviewDate, updatedAt: reviewDate};
+
        dbPromise.then(db => {
         let tx = db.transaction('reviewz', 'readwrite')
         //creates objecststoer which holds database restaurantz
@@ -425,7 +420,22 @@ class DBHelper {
         console.log('Transaction NOT completed, error!');
         }
         });
+        //createReview();
    }
+
+   function createReview() {
+   fetch('http://localhost:1337/reviews', {
+    method: 'post',
+    body: JSON.stringify({
+    "restaurant_id": 3,
+    "name": "Pumpkin",
+    "createdAt": 1504095567183,
+    "updatedAt": 1504095567183,
+    "rating": 4,
+    "comments": "For a Michelin star restaurant, it's fairly priced and the food is fairly good. Started with a strawberry margarita which was good in flavor but not much alcohol. Had the chicken enchiladas with salsa verde and it was really good. Great balance in flavor and a good portion. Extra tasty with their hot sauces. My wife had the lamb but it was a bit too salty for our taste. Although, it was cooked very well and fell off the bone. The highlight of the night was the tres leches cake. Probably the best I've ever had to be honest. Not too sweet and very milky. Overall, one of my top 3 favorite Mexican in NY."
+    })
+    });
+    }
 /**
  * Get a parameter by name from page URL.
  */
@@ -439,3 +449,37 @@ function getParameterByName(name, url) {
   if (!results[2]) return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+      // var reviewDate = Math.round((new Date()).getTime()/1000);
+      // let newItem = { id: reviewDate, restaurant_id: restaurantId, //name: nameInput.value, rating: ratingSelector.value, comments: //commentsInput.value, createdAt: reviewDate, updatedAt: reviewDate};
+        // The parameters we are gonna pass to the fetch function
+        /*let fetchData = { 
+        method: 'POST', 
+        body: 
+        }
+        headers: new Headers()
+        }
+
+       fetch(DBHelper.DATABASE_URL_REVIEWS, fetchData).then(function(response) {
+          if (!response.ok) {
+            throw Error(response.statusText);
+          }
+          return(response.json());
+        }).then(function(response) {
+          console.log("fetch to pOST");
+          callback(null, newItem);
+        }).catch(function(error) {
+          callback(error, null);
+      });*/
+     /* fetch('http://localhost:1337/reviews', {
+    	method: 'post',
+	    body: JSON.stringify({
+          id: 1536200120,
+          restaurant_id: 1,
+           name: Steve,
+           createdAt: 1504095567183,
+           updatedAt: 1504095567183,
+           rating: 4,
+           comments: 'Mission Chinese Food has grown up from its scrappy'
+	    })
+      });*/
