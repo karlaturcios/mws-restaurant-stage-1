@@ -9,7 +9,7 @@ const commentsInput = document.querySelector('#comments');
 const formz = document.querySelector('form');
 //let idReview = 0;
 // open database
-var dbPromise = idb.open('restaurants-reviews', 9, function(upgradeDb) {
+var dbPromise = idb.open('restaurants-reviews', 10, function(upgradeDb) {
   switch (upgradeDb.oldVersion) {
     case 0:
     upgradeDb.createObjectStore('restaurantz', {keyPath: 'id'});
@@ -22,7 +22,7 @@ var dbPromise = idb.open('restaurants-reviews', 9, function(upgradeDb) {
       upgradeDb.createObjectStore('reviewz', {keyPath: 'id'});
     case 2:
     upgradeDb.createObjectStore('submittedReviews', {keyPath: 'id'});
-    submittedReviews.createIndex("restaurant_id", "restaurant_id");
+    //submittedReviews.createIndex("restaurant_id", "restaurant_id");
   }
 });
 
@@ -82,8 +82,6 @@ class DBHelper {
     }).catch(function(error) {
       callback(error, null);
     });
-
-    
   }
   /**
    * Fetch a restaurant by its ID.
@@ -391,15 +389,16 @@ class DBHelper {
   
 }
 
-   //when we submit form we add data with this function
-  // formz.onsubmit = addData;
+function getNewReview(){
+    addData();
+    createReview();
+}
    //function that adds data takes event and prevent default to not refresh and new variable to hold values form submission
-   function addData() {
-    
-    //   e.preventDefault();
-        var reviewDate = Math.round((new Date()).getTime()/1000);
-       let newItem = { id: reviewDate, restaurant_id: restaurantId, name: nameInput.value, rating: ratingSelector.value, comments: commentsInput.value, createdAt: reviewDate, updatedAt: reviewDate};
-
+function addData() {
+       //   e.preventDefault();
+       var reviewDate = Math.round((new Date()).getTime()/1000);
+       let newItem = {id: reviewDate, restaurant_id: restaurantId, name: nameInput.value, rating: ratingSelector.value, comments: commentsInput.value, createdAt: reviewDate, updatedAt: reviewDate};
+       
        dbPromise.then(db => {
         let tx = db.transaction('reviewz', 'readwrite')
         //creates objecststoer which holds database restaurantz
@@ -420,22 +419,36 @@ class DBHelper {
         console.log('Transaction NOT completed, error!');
         }
         });
-        //createReview();
-   }
+}
 
-   function createReview() {
-   fetch('http://localhost:1337/reviews', {
+function createReview() {
+  var body = { 
+    "restaurant_id": restaurantId,
+    "name": nameInput.value,
+    "rating": ratingSelector.value,
+    "comments": commentsInput.value
+  };
+  fetch(DBHelper.DATABASE_URL_REVIEWS, {
+    method: 'POST', 
+    body: JSON.stringify(body), 
+    headers:{
+       'Content-Type': 'application/json'
+        }
+  });
+}
+  /*
+  fetch(DBHelper.DATABASE_URL_REVIEWS, {
     method: 'post',
     body: JSON.stringify({
-    "restaurant_id": 3,
+    "restaurant_id": 9,
     "name": "Pumpkin",
     "createdAt": 1504095567183,
     "updatedAt": 1504095567183,
     "rating": 4,
     "comments": "For a Michelin star restaurant, it's fairly priced and the food is fairly good. Started with a strawberry margarita which was good in flavor but not much alcohol. Had the chicken enchiladas with salsa verde and it was really good. Great balance in flavor and a good portion. Extra tasty with their hot sauces. My wife had the lamb but it was a bit too salty for our taste. Although, it was cooked very well and fell off the bone. The highlight of the night was the tres leches cake. Probably the best I've ever had to be honest. Not too sweet and very milky. Overall, one of my top 3 favorite Mexican in NY."
     })
-    });
-    }
+    });*/
+
 /**
  * Get a parameter by name from page URL.
  */

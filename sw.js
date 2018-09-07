@@ -44,7 +44,7 @@ self.addEventListener('fetch', function(event) {
     .then(function(response) {
       return response || fetchAndCache(event.request);
       /*return response;*/
-      console.log ('Response returned or fecthandcache event');
+     // console.log ('Response returned or fecthandcache event');
     })
   );
 });
@@ -55,13 +55,13 @@ function fetchAndCache(url) {
     return caches.open(staticCacheName)
     .then(function(cache) {
       cache.put(url, response.clone());
-      console.log('fetch url ok');
-      console.log('Response' + response);      
+      //console.log('fetch url ok');
+      //console.log('Response' + response);      
       return response;
     });
   })
   .catch(function(error) {
-    console.log('Request failed:', error);
+   // console.log('Request failed:', error);
     // You could return a custom offline 404 page here
   });
 }
