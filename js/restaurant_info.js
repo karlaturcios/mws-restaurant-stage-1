@@ -96,7 +96,7 @@ function urlForRestaurant(param) {
 fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
-
+//make a button for favorite here
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
 

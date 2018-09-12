@@ -3,7 +3,7 @@ const nameInput = document.querySelector('#name');
 const restaurantNameInput = getParameterByName('id');
 console.log('restaurantNameInput = ' + restaurantNameInput);
 const restaurantId = Number(restaurantNameInput);
-console.log('restaurantId = ' + restaurantId);
+//console.log('restaurantId = ' + restaurantId);
 const ratingSelector = document.querySelector('#rating');
 const commentsInput = document.querySelector('#comments');
 const formz = document.querySelector('form');
@@ -398,10 +398,10 @@ function addData() {
        //   e.preventDefault();
        var reviewDate = Math.round((new Date()).getTime()/1000);
        let newItem = {id: reviewDate, restaurant_id: restaurantId, name: nameInput.value, rating: ratingSelector.value, comments: commentsInput.value, createdAt: reviewDate, updatedAt: reviewDate};
-       
+
        dbPromise.then(db => {
-        let tx = db.transaction('reviewz', 'readwrite')
-        //creates objecststoer which holds database restaurantz
+        let tx = db.transaction('reviewz', 'readwrite');
+        //creates objecststore which holds database reviewz
         let objectStore = tx.objectStore('reviewz');
         //passing new item
         let request = objectStore.put(newItem);
@@ -462,6 +462,100 @@ function getParameterByName(name, url) {
   if (!results[2]) return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+function myFavorite() {
+ console.log('restaurantId = ' + restaurantId);
+ dbPromise.then(function(db) {
+   var tx = db.transaction('restaurantz', 'readwrite');
+   var store = tx.objectStore('restaurantz');
+   return store.openCursor();
+ })
+ .then(function updateFave(cursor) {
+   //if null then exits
+   if(!cursor) {
+    console.log('looped thorough all restaurants.');
+     return;
+    }
+   //this goes through all values to find a match
+   if(cursor.value.id === restaurantId){
+     console.log('the rest id in cursor:' + restaurantId);
+     var updateId = cursor.value;
+     console.log('cursor.value:' + JSON.stringify(cursor.value));
+     updateId.is_favorite = true;
+     var request = cursor.update(updateId);
+     request.onsuccess = function() {
+      console.log('cursor.value after update:' + JSON.stringify(cursor.value));
+    };
+   }
+   //advances to next item
+   return cursor.continue().then(updateFave);
+ })
+
+/* .then(function showItems(cursor) {
+   //if null then exits
+   if(!cursor) {return;}
+   //this goes through all values and consoles them out
+   for (var field in cursor.value){console.log(cursor.value[field]);}
+   //advances to next item
+   return cursor.continue().then(showItems);
+ })*/
+
+ 
+ /*let txfav = db.transaction('restaurantz', 'readwrite')
+ let favStore = txfav.objectStore('restaurantz');
+
+ favStore.openCursor().onsuccess = function(event) {
+  alert("Cursor opened");
+ var cursor = event.target.result;
+ if(cursor) {
+   if(cursor.value.id === restaurantId) {
+     var updateData = cursor.value;
+       
+     updateData.is_favorite = 'true';
+     var request = cursor.update(updateData);
+     request.onsuccess = function() {
+       console.log(cursor.value.id + cursor.value.is_favorite);
+     };
+   };
+
+   cursor.continue();        
+ } else {
+   console.log('No restaurant found');         
+ }
+};
+*/
+
+
+ /*dbPromise.then(db => {
+  let txfav = db.transaction('restaurantz', 'readwrite')
+  //creates objecststore which holds database restaurants
+  let store = txfav.objectStore('restaurantz');
+  //update true
+  store.openCursor().onsuccess = function(event) {
+    console.log('inside Cursor');
+    var cursor = event.target.result;
+    if(cursor) {
+      if(cursor.value.id === restaurantId) {
+        var updateData = cursor.value;
+          
+        updateData.is_favorite = 'true';
+        var request = cursor.update(updateData);
+        request.onsuccess = function() {
+          console.log(cursor.value.id + cursor.value.is_favorite);
+        };
+      };
+  
+      cursor.continue();        
+    } else {
+      console.log('No restaurant found');         
+    }
+  };
+  txfav.onerror = () => {
+  console.log('Transaction NOT completed for favorite, error!');
+  }
+  });*/
+  
+}
+
 
       // var reviewDate = Math.round((new Date()).getTime()/1000);
       // let newItem = { id: reviewDate, restaurant_id: restaurantId, //name: nameInput.value, rating: ratingSelector.value, comments: //commentsInput.value, createdAt: reviewDate, updatedAt: reviewDate};
