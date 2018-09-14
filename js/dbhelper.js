@@ -462,34 +462,42 @@ function getParameterByName(name, url) {
   if (!results[2]) return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+/*
 function myFavorite() {
- console.log('restaurantId = ' + restaurantId);
- dbPromise.then(function(db) {
-   var tx = db.transaction('restaurantz', 'readwrite');
-   var store = tx.objectStore('restaurantz');
-   return store.openCursor();
- })
- .then(function updateFave(cursor) {
-   //if null then exits
+  //console.log('restaurantId = ' + restaurantId);
+  dbPromise.then(function(db) {
+    var tx = db.transaction('restaurantz', 'readwrite');
+    var store = tx.objectStore('restaurantz');
+    return store.openCursor();
+ }).then(function updateFave(cursor) {
+    //if null then exits
    if(!cursor) {
     console.log('looped thorough all restaurants.');
      return;
     }
    //this goes through all values to find a match
-   if(cursor.value.id === restaurantId){
+   else if(cursor.value.id === restaurantId){
      console.log('the rest id in cursor:' + restaurantId);
-     var updateId = cursor.value;
-     console.log('cursor.value:' + JSON.stringify(cursor.value));
-     updateId.is_favorite = true;
-     var request = cursor.update(updateId);
-     request.onsuccess = function() {
-      console.log('cursor.value after update:' + JSON.stringify(cursor.value));
+     if(cursor.value.is_favorite === false)
+     {
+        var updateId = cursor.value;
+        console.log('Not favorite cuz cursor.value.is_favorite is ' + JSON.stringify(cursor.value.is_favorite));
+        updateId.is_favorite = true;
+        var request = cursor.update(updateId);
+     } else if(cursor.value.is_favorite === true) {
+        var updateId = cursor.value;
+        console.log('favorite cuz cursor.value.is_favorite is' + JSON.stringify(cursor.value.is_favorite));
+        updateId.is_favorite = false;
+       var request = cursor.update(updateId);
+     }
+        request.onsuccess = function() {
+        console.log('cursor.value after update:' + JSON.stringify(cursor.value));
     };
    }
    //advances to next item
    return cursor.continue().then(updateFave);
- })
-
+ });
+}*/
 /* .then(function showItems(cursor) {
    //if null then exits
    if(!cursor) {return;}
@@ -554,7 +562,7 @@ function myFavorite() {
   }
   });*/
   
-}
+
 
 
       // var reviewDate = Math.round((new Date()).getTime()/1000);
