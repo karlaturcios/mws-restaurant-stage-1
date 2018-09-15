@@ -1,7 +1,7 @@
 const nameInput = document.querySelector('#name');
 //const restaurantNameInput = document.querySelector('#restaurantName');
 const restaurantNameInput = getParameterByName('id');
-console.log('restaurantNameInput = ' + restaurantNameInput);
+//console.log('restaurantNameInput = ' + restaurantNameInput);
 const restaurantId = Number(restaurantNameInput);
 //console.log('restaurantId = ' + restaurantId);
 const ratingSelector = document.querySelector('#rating');
@@ -14,15 +14,9 @@ var dbPromise = idb.open('restaurants-reviews', 10, function(upgradeDb) {
     case 0:
     upgradeDb.createObjectStore('restaurantz', {keyPath: 'id'});
     case 1:
-      
-      //const submittedReviews = upgradeDB.createObjectStore('reviewz', {keyPath: 'id', autoIncrement: true});
-      //submittedReviews.createIndex('name', 'name', { unique: false });
-      //submittedReviews.createIndex('rating', 'rating', { unique: false });
-      //submittedReviews.createIndex('comments', 'comments', { unique: false });
       upgradeDb.createObjectStore('reviewz', {keyPath: 'id'});
     case 2:
     upgradeDb.createObjectStore('submittedReviews', {keyPath: 'id'});
-    //submittedReviews.createIndex("restaurant_id", "restaurant_id");
   }
 });
 
@@ -192,101 +186,6 @@ class DBHelper {
     });
   }
 
-  /**
-   * Fetch all reviews not working.
-   */
-
-/*
-  // Fetch request
-  static fetchReviews(callback, id){
-    let fetchReviewURL;
-    if (!id){
-      fetchReviewURL = DBHelper.DATABASE_URL_REVIEWS;
-      console.log(fetchReviewURL);
-    } else {
-      fetchReviewURL = DBHelper.DATABASE_URL_REVIEWS + '/?restaurant_id=' + id;
-      console.log(fetchReviewURL);
-    }
-    fetch(fetchReviewsURL).then(function(response) {
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      return response.json();
-    }).then(function(response) {
-      const reviews = response;
-      console.log("reviews: " + JSON.stringify(reviews));
-      dbPromise.then(db => {
-        let txrvz = db.transaction('reviewz', 'readwrite').objectStore('reviewz')
-          for (const review of reviews) {
-            txrvz.put(review)
-            console.log("Putting each review from reviews")
-          }
-      });
-      callback(null, reviews);
-    }).catch(function(error) {
-      callback(error, null);
-    });
-
-  }*/
-
-  /**
-   * Fetch a review by its ID.
-   */
-  /*
-  static fetchReviewsById(id, callback) {
-    // fetch all reviews for a restaurant by id
-    console.log('rest id: ' + id);
-    const fetchReviewURL = DBHelper.DATABASE_URL_REVIEWS + '/?restaurant_id=' + id;
-    fetch(fetchReviewURL, {method: 'GET'}).then(function(response) {
-      if (!response.ok) {
-        console.log('Problem');
-      }
-      console.log('response');
-      console.log(response.json());//console out put of review by rest id,
-    });
-  }
-*/
-/*
-  static fetchReviewsById(id, callback) {
-    // fetch all reviews for a restaurant by id
-    console.log('rest id: ' + id);
-    const fetchReviewURL = DBHelper.DATABASE_URL_REVIEWS + '/?restaurant_id=' + id;
-
-    fetch(fetchReviewURL, {method: 'GET'}).then(function(response) {
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      return(response.json());
-    }).then(function(response) {
-      return response.json();
-    }).catch(error => callback(error, null));
-  }
-  
- static fetchReviewsById(id, callback) {
-  // fetch all reviews for a restaurant by id
-  console.log('rest id: ' + id);
-  const fetchReviewURL = DBHelper.DATABASE_URL_REVIEWS + '/?restaurant_id=' + id;
-
-  fetch(fetchReviewURL, {method: 'GET'}).then(function(response) {
-    if (!response.ok) {
-      throw Error(response.statusText);
-    }
-    return(response.json());
-  }).then(function(response) {
-    const reviews = response;
-    console.log('Reviews for rest #' + id + 'are' + JSON.stringify(reviews));
-    dbPromise.then(db => {
-      let reviewstx = db.transaction('submittedReviews', 'readwrite').objectStore('submittedReviews')
-        for (const review of reviews) {
-          reviewstx.put(review)
-          console.log('review: ' + JSON.stringify(review));
-        }
-    });
-    callback(null, reviews);
-  }).catch(error => callback(error, null));
-}
-*/
-
 /**
    * Fetch all reviews.
    */
@@ -389,13 +288,17 @@ class DBHelper {
   
 }
 
-function getNewReview(){
+/**
+ * Get review and add it to IDB and to REST Server
+ */
+
+function getNewReview() {
     addData();
     createReview();
 }
-   //function that adds data takes event and prevent default to not refresh and new variable to hold values form submission
+//function that adds review to indexedb
 function addData() {
-       //   e.preventDefault();
+       //e.preventDefault();
        var reviewDate = Math.round((new Date()).getTime()/1000);
        let newItem = {id: reviewDate, restaurant_id: restaurantId, name: nameInput.value, rating: ratingSelector.value, comments: commentsInput.value, createdAt: reviewDate, updatedAt: reviewDate};
 
@@ -405,7 +308,7 @@ function addData() {
         let objectStore = tx.objectStore('reviewz');
         //passing new item
         let request = objectStore.put(newItem);
-               //info if success
+        //info if success
         request.onsuccess = () => {
         //once successful clear form since its added to database
         nameInput.value = '';
@@ -420,7 +323,7 @@ function addData() {
         }
         });
 }
-
+//function that adds review to REST server
 function createReview() {
   var body = { 
     "restaurant_id": restaurantId,
@@ -434,20 +337,12 @@ function createReview() {
     headers:{
        'Content-Type': 'application/json'
         }
+  }).then(function(response){
+    //return response.json();
+    console.log(response.status);
   });
 }
-  /*
-  fetch(DBHelper.DATABASE_URL_REVIEWS, {
-    method: 'post',
-    body: JSON.stringify({
-    "restaurant_id": 9,
-    "name": "Pumpkin",
-    "createdAt": 1504095567183,
-    "updatedAt": 1504095567183,
-    "rating": 4,
-    "comments": "For a Michelin star restaurant, it's fairly priced and the food is fairly good. Started with a strawberry margarita which was good in flavor but not much alcohol. Had the chicken enchiladas with salsa verde and it was really good. Great balance in flavor and a good portion. Extra tasty with their hot sauces. My wife had the lamb but it was a bit too salty for our taste. Although, it was cooked very well and fell off the bone. The highlight of the night was the tres leches cake. Probably the best I've ever had to be honest. Not too sweet and very milky. Overall, one of my top 3 favorite Mexican in NY."
-    })
-    });*/
+
 
 /**
  * Get a parameter by name from page URL.
@@ -462,9 +357,13 @@ function getParameterByName(name, url) {
   if (!results[2]) return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
-/*
+
+/**
+ * Updates Favorite Status of Restaurant
+ */
+
 function myFavorite() {
-  //console.log('restaurantId = ' + restaurantId);
+
   dbPromise.then(function(db) {
     var tx = db.transaction('restaurantz', 'readwrite');
     var store = tx.objectStore('restaurantz');
@@ -472,129 +371,29 @@ function myFavorite() {
  }).then(function updateFave(cursor) {
     //if null then exits
    if(!cursor) {
-    console.log('looped thorough all restaurants.');
+    //console.log('looped thorough all restaurants.');
      return;
     }
    //this goes through all values to find a match
    else if(cursor.value.id === restaurantId){
-     console.log('the rest id in cursor:' + restaurantId);
+     //console.log('the rest id in cursor:' + restaurantId);
      if(cursor.value.is_favorite === false)
      {
         var updateId = cursor.value;
-        console.log('Not favorite cuz cursor.value.is_favorite is ' + JSON.stringify(cursor.value.is_favorite));
+        //console.log('Not favorite cuz cursor.value.is_favorite is ' + JSON.stringify(cursor.value.is_favorite));
         updateId.is_favorite = true;
         var request = cursor.update(updateId);
      } else if(cursor.value.is_favorite === true) {
         var updateId = cursor.value;
-        console.log('favorite cuz cursor.value.is_favorite is' + JSON.stringify(cursor.value.is_favorite));
+        //console.log('favorite cuz cursor.value.is_favorite is' + JSON.stringify(cursor.value.is_favorite));
         updateId.is_favorite = false;
        var request = cursor.update(updateId);
      }
         request.onsuccess = function() {
-        console.log('cursor.value after update:' + JSON.stringify(cursor.value));
+        //console.log('cursor.value after update:' + JSON.stringify(cursor.value));
     };
    }
    //advances to next item
    return cursor.continue().then(updateFave);
  });
-}*/
-/* .then(function showItems(cursor) {
-   //if null then exits
-   if(!cursor) {return;}
-   //this goes through all values and consoles them out
-   for (var field in cursor.value){console.log(cursor.value[field]);}
-   //advances to next item
-   return cursor.continue().then(showItems);
- })*/
-
- 
- /*let txfav = db.transaction('restaurantz', 'readwrite')
- let favStore = txfav.objectStore('restaurantz');
-
- favStore.openCursor().onsuccess = function(event) {
-  alert("Cursor opened");
- var cursor = event.target.result;
- if(cursor) {
-   if(cursor.value.id === restaurantId) {
-     var updateData = cursor.value;
-       
-     updateData.is_favorite = 'true';
-     var request = cursor.update(updateData);
-     request.onsuccess = function() {
-       console.log(cursor.value.id + cursor.value.is_favorite);
-     };
-   };
-
-   cursor.continue();        
- } else {
-   console.log('No restaurant found');         
- }
-};
-*/
-
-
- /*dbPromise.then(db => {
-  let txfav = db.transaction('restaurantz', 'readwrite')
-  //creates objecststore which holds database restaurants
-  let store = txfav.objectStore('restaurantz');
-  //update true
-  store.openCursor().onsuccess = function(event) {
-    console.log('inside Cursor');
-    var cursor = event.target.result;
-    if(cursor) {
-      if(cursor.value.id === restaurantId) {
-        var updateData = cursor.value;
-          
-        updateData.is_favorite = 'true';
-        var request = cursor.update(updateData);
-        request.onsuccess = function() {
-          console.log(cursor.value.id + cursor.value.is_favorite);
-        };
-      };
-  
-      cursor.continue();        
-    } else {
-      console.log('No restaurant found');         
-    }
-  };
-  txfav.onerror = () => {
-  console.log('Transaction NOT completed for favorite, error!');
-  }
-  });*/
-  
-
-
-
-      // var reviewDate = Math.round((new Date()).getTime()/1000);
-      // let newItem = { id: reviewDate, restaurant_id: restaurantId, //name: nameInput.value, rating: ratingSelector.value, comments: //commentsInput.value, createdAt: reviewDate, updatedAt: reviewDate};
-        // The parameters we are gonna pass to the fetch function
-        /*let fetchData = { 
-        method: 'POST', 
-        body: 
-        }
-        headers: new Headers()
-        }
-
-       fetch(DBHelper.DATABASE_URL_REVIEWS, fetchData).then(function(response) {
-          if (!response.ok) {
-            throw Error(response.statusText);
-          }
-          return(response.json());
-        }).then(function(response) {
-          console.log("fetch to pOST");
-          callback(null, newItem);
-        }).catch(function(error) {
-          callback(error, null);
-      });*/
-     /* fetch('http://localhost:1337/reviews', {
-    	method: 'post',
-	    body: JSON.stringify({
-          id: 1536200120,
-          restaurant_id: 1,
-           name: Steve,
-           createdAt: 1504095567183,
-           updatedAt: 1504095567183,
-           rating: 4,
-           comments: 'Mission Chinese Food has grown up from its scrappy'
-	    })
-      });*/
+}
