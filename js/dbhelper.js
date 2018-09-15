@@ -332,6 +332,23 @@ function createReview() {
     "comments": commentsInput.value
   };
   fetch(DBHelper.DATABASE_URL_REVIEWS, {
+    method: 'post', 
+    headers:{
+      'Content-Type': 'application/json'
+       },
+    body: JSON.stringify(body) 
+  })
+  .catch(function(){});
+}
+/*
+function createReview() {
+  var body = { 
+    "restaurant_id": restaurantId,
+    "name": nameInput.value,
+    "rating": ratingSelector.value,
+    "comments": commentsInput.value
+  };
+  fetch(DBHelper.DATABASE_URL_REVIEWS, {
     method: 'POST', 
     body: JSON.stringify(body), 
     headers:{
@@ -342,7 +359,7 @@ function createReview() {
     console.log(response.status);
   });
 }
-
+*/
 
 /**
  * Get a parameter by name from page URL.
