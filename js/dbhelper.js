@@ -9,10 +9,16 @@ const commentsInput = document.querySelector('#comments');
 const formz = document.querySelector('form');
 //let idReview = 0;
 // open database
-var dbPromise = idb.open('restaurants-reviews', 10, function(upgradeDb) {
+var dbPromise = idb.open('restaurants-reviews', 12, function(upgradeDb) {
   switch (upgradeDb.oldVersion) {
     case 0:
-    upgradeDb.createObjectStore('restaurantz', {keyPath: 'id'});
+   //upgradeDb.createObjectStore('restaurantz', {keyPath: 'id'});
+   //let objectStore = upgradeDb.createObjectStore('restaurantz', {keyPath: 'id'});
+        //schema
+      //  objectStore.createIndex('is_favorite', 'is_favorite', {unique: false});
+
+        var restStore = upgradeDb.createObjectStore('restaurantz', {keyPath: 'id'});
+        restStore.createIndex('is_favorite', 'is_favorite');    
     case 1:
       upgradeDb.createObjectStore('reviewz', {keyPath: 'id'});
     case 2:
@@ -20,11 +26,62 @@ var dbPromise = idb.open('restaurants-reviews', 10, function(upgradeDb) {
   }
 });
 
+
+
+/*
+dbPromise.then(db => {
+  let tx = db.transaction('restaurantz');
+  //console.log(tx);
+  let rezStore = tx.objectStore('restaurantz');
+  var favIndex = rezStore.index('is_favorite');
+ console.log(favIndex);
+  return favIndex.getAll('true');
+ }).then(function(fav) {
+   console.log('fav restaurant:', fav);
+  });
+*/
+
+//var favIndex = dbPromise.objectStore.index('is_favorite');
+
+/*dbPromise.then(db => {
+ let tx = db.transaction('restaurantz');
+ //console.log(tx);
+ let rezStore = tx.objectStore('restaurantz');
+ var favIndex = rezStore.index('is_favorite');
+console.log(favIndex);
+ return favIndex.getAll('true');
+}).then(function(fav) {
+  console.log('fav restaurant:', fav);
+ });*/
+
+ dbPromise.then(db => {
+  let favtx = db.transaction('restaurantz', 'readwrite');
+  //console.log(tx);
+  let rezStore = favtx.objectStore('restaurantz');
+  var favIndex = rezStore.index('is_favorite');
+ console.log(favIndex);
+  return favIndex.getAll('true');
+ }).then(function(fav) {
+   console.log('fav restaurant:', fav);
+  });
+
+/*
+ dbPromise.onsuccess = () => {
+  dbPromise.then(db => {
+    let favtx = db.transaction('restaurantz', 'readwrite').objectStore('restaurantz')
+    const favIndex = favtx.index('is_favorite');
+        // Get an fav by index
+        const getFavIdx = favIndex.getAll(true);
+        getFavIdx.onsuccess = () => {
+            console.log(getFavIdx.result); 
+        };
+});
+}*/
+
 /**
  * Common database helper functions.
  */
 class DBHelper {
-  
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
@@ -212,7 +269,7 @@ class DBHelper {
          let reviewstx = db.transaction('submittedReviews', 'readwrite').objectStore('submittedReviews')
          var reviewsAmount = reviews.length;
          let idReview = reviewsAmount;
-         console.log('idReview: ' + idReview);
+         //console.log('idReview: ' + idReview);
         for (const review of reviews) {
           reviewstx.put(review)
           //console.log('review from fetchreviewURL: ' + JSON.stringify(review));
@@ -331,6 +388,7 @@ function createReview() {
     "rating": ratingSelector.value,
     "comments": commentsInput.value
   };
+
   fetch(DBHelper.DATABASE_URL_REVIEWS, {
     method: 'post', 
     headers:{
@@ -338,8 +396,34 @@ function createReview() {
        },
     body: JSON.stringify(body) 
   })
-  .catch(function(){});
+  //.catch(function(){});
 }
+
+/*function createReview() {
+  var body = { 
+    "restaurant_id": restaurantId,
+    "name": nameInput.value,
+    "rating": ratingSelector.value,
+    "comments": commentsInput.value
+  };
+
+    self.addEventListener('fetch', function(event) {
+        var request = event.request;
+        console.log ("URL: " + request.url);
+        if (request.url == 'http://localhost:1337/reviews') { return; }
+        
+        event.respondWith(
+          fetch(DBHelper.DATABASE_URL_REVIEWS, {
+            method: 'post', 
+            headers:{
+              'Content-Type': 'application/json'
+              },
+            body: JSON.stringify(body) 
+          })
+        );
+      });
+
+}*/
 /*
 function createReview() {
   var body = { 
@@ -375,12 +459,23 @@ function getParameterByName(name, url) {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
+
+/**
+ * Change Favorite status for restaurant in IDB and to REST Server
+ */
+
+function favRestaurant() {
+  myFavorite();
+  putFavorite();
+}
 /**
  * Updates Favorite Status of Restaurant
  */
 
 function myFavorite() {
-
+  //var e = e || window.event;
+  //e.preventDefault();
+  //console.log("my Favorite function is open");
   dbPromise.then(function(db) {
     var tx = db.transaction('restaurantz', 'readwrite');
     var store = tx.objectStore('restaurantz');
@@ -400,17 +495,79 @@ function myFavorite() {
         //console.log('Not favorite cuz cursor.value.is_favorite is ' + JSON.stringify(cursor.value.is_favorite));
         updateId.is_favorite = true;
         var request = cursor.update(updateId);
+        console.log('restaurantId is :' + restaurantId);
+        fetchFavURL = DBHelper.DATABASE_URL + '/' + restaurantId + '/?is_favorite=true';
+        var body = { 
+          "is_favorite": true
+        };
+        fetch(fetchFavURL, {
+          method: 'put', 
+          headers:{
+            'Content-Type': 'application/json'
+             },
+          body: JSON.stringify(body) 
+        });
+        console.log(restaurantId  + 's.is_favorite is now: ' +  JSON.stringify(updateId.is_favorite));
+        //TODO PUT this to the server at the same time with putFavoritefunction ?
      } else if(cursor.value.is_favorite === true) {
         var updateId = cursor.value;
         //console.log('favorite cuz cursor.value.is_favorite is' + JSON.stringify(cursor.value.is_favorite));
         updateId.is_favorite = false;
        var request = cursor.update(updateId);
+       fetchFavURL = DBHelper.DATABASE_URL + '/' + restaurantId + '/?is_favorite=false';
+       var body = { 
+         "is_favorite": false
+       };
+       fetch(fetchFavURL, {
+         method: 'put', 
+         headers:{
+           'Content-Type': 'application/json'
+            },
+         body: JSON.stringify(body) 
+       });
+      // console.log(UpdateId.id + 's.is_favorite is now: ' +  JSON.stringify(updateId.is_favorite));
      }
         request.onsuccess = function() {
-        //console.log('cursor.value after update:' + JSON.stringify(cursor.value));
+        console.log('cursor.value after False update:' + JSON.stringify(cursor.value));
     };
    }
    //advances to next item
    return cursor.continue().then(updateFave);
  });
+}
+
+
+//function that adds review to REST server
+/*function putFavorite() {
+  var body = { 
+    "is_favorite": cursor.value.is_favorite
+  };
+  fetchFavURL = DBHelper.DATABASE_URL + '/' + restaurantId + '/?is_favorite=true';
+  fetchNOTFavURL = DBHelper.DATABASE_URL + '/' + restaurantId + '/?is_favorite=false';
+TODO cursor through database for favorite is true and put http://localhost:1337/restaurants/<restaurant_id>/?is_favorite=true 
+if not true then http://localhost:1337/restaurants/<restaurant_id>/?is_favorite=false
+  fetch(DBHelper.DATABASE_URL, {
+    method: 'put', 
+    headers:{
+      'Content-Type': 'application/json'
+       },
+    body: JSON.stringify(body) 
+  })
+  //.catch(function(){});
+}*/
+//function that adds fav to REST server 
+function putFavorite() {
+  var body = { 
+    "is_favorite": true
+  };
+  fetchFavURL = DBHelper.DATABASE_URL + '/' + restaurantId + '/?is_favorite=true';
+
+/*TODO  if its favorite is true and put http://localhost:1337/restaurants/<restaurant_id>/?is_favorite=true */
+  fetch(fetchFavURL, {
+    method: 'put', 
+    headers:{
+      'Content-Type': 'application/json'
+       },
+    body: JSON.stringify(body) 
+  })
 }

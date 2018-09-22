@@ -39,12 +39,16 @@ self.addEventListener('install', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
+  var request = event.request;
+  //Avoid caching POST events
+  if (request.method !== 'GET') { 
+    return; 
+  }
   event.respondWith(
     caches.match(event.request)
     .then(function(response) {
       return response || fetchAndCache(event.request);
-      /*return response;*/
-     // console.log ('Response returned or fecthandcache event');
+
     })
   );
 });
