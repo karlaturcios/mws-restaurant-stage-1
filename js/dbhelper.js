@@ -18,7 +18,7 @@ var dbPromise = idb.open('restaurants-reviews', 12, function(upgradeDb) {
       //  objectStore.createIndex('is_favorite', 'is_favorite', {unique: false});
 
         var restStore = upgradeDb.createObjectStore('restaurantz', {keyPath: 'id'});
-        restStore.createIndex('is_favorite', 'is_favorite');    
+        //restStore.createIndex('is_favorite', 'is_favorite');    
     case 1:
       upgradeDb.createObjectStore('reviewz', {keyPath: 'id'});
     case 2:
@@ -53,7 +53,7 @@ console.log(favIndex);
 }).then(function(fav) {
   console.log('fav restaurant:', fav);
  });*/
-
+/*
  dbPromise.then(db => {
   let favtx = db.transaction('restaurantz', 'readwrite');
   //console.log(tx);
@@ -63,7 +63,7 @@ console.log(favIndex);
   return favIndex.getAll('true');
  }).then(function(fav) {
    //console.log('fav restaurant:', fav);
-  });
+  });*/
 
 /*
  dbPromise.onsuccess = () => {
@@ -590,8 +590,8 @@ function myFavorite() {
    }
    //advances to next item
    return cursor.continue().then(updateFave);
- });
- tx.complete.then(() => console.log('done'));
+ }).then(() => console.log('done'));/*;
+ tx.complete*/
 }
 
 //function that adds review to REST server
