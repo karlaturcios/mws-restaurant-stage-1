@@ -544,22 +544,19 @@ function myFavorite() {
 
 function myFavorite() {
   dbPromise.then(function(db) {
-    var tx = db.transaction('restaurantz', 'readwrite');
+    const tx = db.transaction('restaurantz', 'readwrite');
     var store = tx.objectStore('restaurantz');
     return store.openCursor();
  }).then(function updateFave(cursor) {
     //if null then exits
    if(!cursor) {
-    //console.log('looped thorough all restaurants.');
      return;
     }
    //this goes through all values to find a match
    else if(cursor.value.id === restaurantId){
-     //console.log('the rest id in cursor:' + restaurantId);
      if(cursor.value.is_favorite === false)
      {
         var updateId = cursor.value;
-        //console.log('Not favorite cuz cursor.value.is_favorite is ' + JSON.stringify(cursor.value.is_favorite));
         updateId.is_favorite = true;
         var request = cursor.update(updateId);
         console.log('restaurantId is :' + restaurantId);
@@ -574,11 +571,8 @@ function myFavorite() {
              },
           body: JSON.stringify(body) 
         });
-        console.log(restaurantId  + 's.is_favorite is now: ' +  JSON.stringify(updateId.is_favorite));
-        //TODO PUT this to the server at the same time with putFavoritefunction ?
      } else if(cursor.value.is_favorite === true) {
         var updateId = cursor.value;
-        //console.log('favorite cuz cursor.value.is_favorite is' + JSON.stringify(cursor.value.is_favorite));
         updateId.is_favorite = false;
        var request = cursor.update(updateId);
        fetchFavURL = DBHelper.DATABASE_URL + '/' + restaurantId + '/?is_favorite=false';
@@ -592,13 +586,12 @@ function myFavorite() {
             },
          body: JSON.stringify(body) 
        });
-      // console.log(UpdateId.id + 's.is_favorite is now: ' +  JSON.stringify(updateId.is_favorite));
      }
    }
    //advances to next item
    return cursor.continue().then(updateFave);
  });
- return tx.complete;
+ tx.complete.then(() => console.log('done'));
 }
 
 //function that adds review to REST server
