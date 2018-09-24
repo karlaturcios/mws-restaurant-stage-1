@@ -1,5 +1,5 @@
 var staticCacheName = 'my-site-cache-v26';
-
+//files to cache
 var urlsToCache = [
   '/',
   '/index.html',
@@ -25,20 +25,23 @@ var urlsToCache = [
   'img/na.jpg',
   'favicon.ico'
 ];
-//TODO Double check the service worker
+
 self.addEventListener('install', function(event) {
   // Perform install steps and set up cache for service worker
   console.log('Attempting to install service worker and cache static assets');
   event.waitUntil(
     caches.open(staticCacheName)
       .then(function(cache) {
-        console.log('Opened cache');
+        console.log('Opened cache and add all URLS');
         return cache.addAll(urlsToCache);
-        console.log('Added cache urls');
       })
   );
 });
 
+
+
+
+//Retrieve from cache, network or database
 self.addEventListener('fetch', function(event) {
   var request = event.request;
   //Avoid caching POST events
@@ -48,8 +51,8 @@ self.addEventListener('fetch', function(event) {
   event.respondWith(
     caches.match(event.request)
     .then(function(response) {
-      return response || fetchAndCache(event.request);
-
+      //return response || fetchAndCache(event.request);
+      return response || fetch(event.request);
     })
   );
 });
@@ -71,9 +74,12 @@ function fetchAndCache(url) {
   });
 }
 
+
+
+//Update cache anything new or remove
 self.addEventListener('activate', function(event) {
   //this service takes center stage now
-  console.log('Activating new service worker...');
+  console.log('Activating new service worker to remove outdated caches');
 
   var cacheWhitelist = [staticCacheName];
 
