@@ -11,9 +11,9 @@ getParameterByName = (name, url) => {
   name = name.replace(/[\[\]]/g, '\\$&');
   const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`),
     results = regex.exec(url);
-    console.log('results =' + results[2]);
+    //console.log('results =' + results[2]);
     const param = results[2];
-    console.log('results const param =' + param);
+    //console.log('results const param =' + param);
   if (!results)
     return null;
   if (!results[2])

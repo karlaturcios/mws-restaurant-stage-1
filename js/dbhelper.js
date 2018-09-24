@@ -9,7 +9,7 @@ const commentsInput = document.querySelector('#comments');
 const formz = document.querySelector('form');
 //let idReview = 0;
 // open database
-var dbPromise = idb.open('restaurants-reviews', 12, function(upgradeDb) {
+var dbPromise = idb.open('restaurants-reviews', 13, function(upgradeDb) {
   switch (upgradeDb.oldVersion) {
     case 0:
    //upgradeDb.createObjectStore('restaurantz', {keyPath: 'id'});

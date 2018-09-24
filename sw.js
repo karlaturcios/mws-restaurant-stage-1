@@ -1,4 +1,4 @@
-var staticCacheName = 'my-site-cache-v25';
+var staticCacheName = 'my-site-cache-v26';
 
 var urlsToCache = [
   '/',
@@ -21,10 +21,11 @@ var urlsToCache = [
   'img/6.jpg',
   'img/7.jpg',
   'img/8.jpg',
-  'img/8.jpg',
+  'img/9.jpg',
   'img/na.jpg',
   'favicon.ico'
 ];
+//TODO Double check the service worker
 self.addEventListener('install', function(event) {
   // Perform install steps and set up cache for service worker
   console.log('Attempting to install service worker and cache static assets');
