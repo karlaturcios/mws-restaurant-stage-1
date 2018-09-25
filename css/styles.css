@@ -450,7 +450,7 @@ color: #fff;
   transition: .4s;
 }
 
-input:checked + .slider {
+input:checked + .slider, .slideractive {
   background-color:  #4a138c;
 }
 

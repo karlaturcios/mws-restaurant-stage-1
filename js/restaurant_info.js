@@ -100,6 +100,22 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
 
+  const restFav = document.getElementById('restaurant-status');
+  console.log('restaurant.is_favorite is ' + restaurant.is_favorite);
+  if (restaurant.is_favorite === 'true') {
+    //restFav.innerHTML = 'A Favorite';
+    document.getElementById('slider-control').classList.add('slideractive');
+    //fillRestaurantHoursHTML();
+  } else if (restaurant.is_favorite === 'false'){
+   // restFav.innerHTML = 'Make Favorite';
+  } else {
+    //restFav.innerHTML = 'Make Favorite';
+  }
+
+
+ 
+
+
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img'
   image.src = DBHelper.imageUrlForRestaurant(restaurant) + ".jpg";
@@ -116,6 +132,19 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   // fill reviews
   /*fillReviewsHTML();*/
   //DBHelper.fetchReviewsById(restaurant.id, fillReviewsHTML)
+
+
+/*
+
+  DBHelper.fetchFavById((id, callback) => {
+    if (error) {
+      callback(error.null);
+    } else {
+      const 
+      fillFavToggle(results);
+    }
+  })*/
+  
     /**
    * Fetch a restaurant reviews by its ID.
    */

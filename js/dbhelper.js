@@ -282,6 +282,27 @@ class DBHelper {
 
     
   }
+
+
+/**
+ * Fetch a restaurant favorite status by its ID
+ */
+
+  /*
+static fetchFavById(id, callback) {
+  dbPromise.then( async db => {
+    let tx = db.transaction('restaurantz', 'readwrite');
+    let store = tx.objectStore('restaurantz');
+    let restaurant = await store.get(id);
+    var favStatus = restaurant.is_favorite;
+    console.log(favStatus);
+    return tx.complete;
+   }).catch(function(error) {
+    callback(error, null);
+  });
+  }*/
+
+
   /**
    * Fetch a restaurant reviews by its ID.
    */
@@ -305,6 +326,7 @@ class DBHelper {
       }
     });
 }*/
+
   /**
    * Restaurant page URL.
    */
@@ -571,6 +593,7 @@ function myFavorite() {
              },
           body: JSON.stringify(body) 
         });
+       // document.getElementById('slider-control').classList.add('slideractive');
      } else if(cursor.value.is_favorite === true) {
         var updateId = cursor.value;
         updateId.is_favorite = false;
@@ -586,11 +609,15 @@ function myFavorite() {
             },
          body: JSON.stringify(body) 
        });
+     /*  if (document.getElementById('slider-control').classList.contains('slideractive')){
+        document.getElementById('slider-control').classList.remove('slideractive');
+      }*/
      }
    }
    //advances to next item
    return cursor.continue().then(updateFave);
- }).then(() => console.log('done'));/*;
+ }).then(() => console.log('done'));
+ /*;
  tx.complete*/
 }
 
