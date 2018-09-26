@@ -562,7 +562,29 @@ function myFavorite() {
  //})
  //;
 }*/
-
+function restFavor() {
+  dbPromise.then( async db => {
+    const tx = db.transaction('restaurantz', 'readwrite');
+    const store = tx.objectStore('restaurantz');
+    id = restaurantId;
+    console.log('restaurantId' + restaurantId);
+    console.log('id' + id);
+   //Get the current restaurant (using the id)
+   let restaurant = await store.get(id);
+   console.log('restaurant object is' + JSON.stringify(restaurant));
+   console.log('restaurant.is_favorite was' + restaurant.is_favorite);
+   //Update favorite
+   //restaurant.is_favorite = <new_value>;
+   restaurant.is_favorite = !restaurant.is_favorite;
+   console.log('restaurant.is_favorite is now' + restaurant.is_favorite);
+   console.log('restaurant object is' + JSON.stringify(restaurant));
+   //Replace in store
+   //store.put(restaurant, id);
+   //store.put({restaurant}, id);
+   store.put(restaurant);
+   return tx.complete;
+ })
+}
 
 function myFavorite() {
   dbPromise.then(function(db) {
