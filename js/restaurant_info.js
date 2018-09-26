@@ -102,14 +102,14 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const restFav = document.getElementById('restaurant-status');
   console.log('restaurant.is_favorite is ' + restaurant.is_favorite);
-  if (restaurant.is_favorite === true) {
-    restFav.innerHTML = 'A Favorite';
+  if (restaurant.is_favorite === 'true') {
+    restFav.innerHTML = 'Favorite';
    // document.getElementById('slider-control').classList.add('slideractive');
     //fillRestaurantHoursHTML();
-  } else if (restaurant.is_favorite === false){
-   restFav.innerHTML = 'Make Favorite';
+  } else if (restaurant.is_favorite === 'false'){
+   restFav.innerHTML = 'Favorite';
   } else {
-    restFav.innerHTML = 'Undefined';
+    restFav.innerHTML = 'Make Favorite';
   }
 
 

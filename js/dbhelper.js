@@ -563,12 +563,15 @@ function myFavorite() {
  //;
 }*/
 function restFavor() {
+  
   dbPromise.then( async db => {
     const tx = db.transaction('restaurantz', 'readwrite');
     const store = tx.objectStore('restaurantz');
     id = restaurantId;
+    
     console.log('restaurantId' + restaurantId);
     console.log('id' + id);
+    
    //Get the current restaurant (using the id)
    let restaurant = await store.get(id);
    console.log('restaurant object is' + JSON.stringify(restaurant));
@@ -576,12 +579,47 @@ function restFavor() {
    //Update favorite
    //restaurant.is_favorite = <new_value>;
    restaurant.is_favorite = !restaurant.is_favorite;
+   let fetchFavURL = `${DBHelper.DATABASE_URL}/${restaurantId}/?is_favorite=${restaurant.is_favorite}`;
+   //fetchFavURL = DBHelper.DATABASE_URL + '/' + restaurantId + '/?is_favorite=' + restaurant.is_favorite;
+   var body = { 
+    "is_favorite": restaurant.is_favorite
+  };
    console.log('restaurant.is_favorite is now' + restaurant.is_favorite);
    console.log('restaurant object is' + JSON.stringify(restaurant));
+   console.log('body: ' + body);
+   console.log('Replace in endpoint with fetchFavURL: ' + fetchFavURL);
    //Replace in store
    //store.put(restaurant, id);
    //store.put({restaurant}, id);
    store.put(restaurant);
+   if (!navigator.onLine) {
+    console.log(`offline! Can't update API`);
+  } else {
+    return new Promise(function(resolve, reject) {
+      fetch(fetchFavURL, {method: 'PUT'})
+        .then(() => {
+          resolve(true);
+        })
+        .catch((err) => {
+          console.log(`NO Fetch, Error: ${err}`);
+        });
+      });
+}
+   /*
+   fetch(fetchFavURL, {method: 'PUT'})
+    .then(() => {
+    resolve(true);
+    })
+    .catch((err) => {
+    console.log(`NO Fetch, Error: ${err}`);
+    });*/
+   /*fetch(fetchFavURL, {
+    method: 'put', 
+    headers:{
+      'Content-Type': 'application/json'
+       },
+    body: JSON.stringify(body) 
+  });*/
    return tx.complete;
  })
 }
