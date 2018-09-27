@@ -23,7 +23,8 @@ var urlsToCache = [
   'img/8.jpg',
   'img/9.jpg',
   'img/na.jpg',
-  'favicon.ico'
+  'favicon.ico',
+  'manifest.json'
 ];
 
 self.addEventListener('install', function(event) {
@@ -162,6 +163,7 @@ self.addEventListener('fetch', function(event) {
   );
 });
 */
+/*
 function fetchAndCache(url) {
   return fetch(url)
   .then(function(response) {
@@ -178,4 +180,4 @@ function fetchAndCache(url) {
    return caches.match('/offline.html');
   });
 }
-
+*/
