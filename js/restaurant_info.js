@@ -102,17 +102,17 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const restFav = document.getElementById('restaurant-status');
   console.log('restaurant.is_favorite is ' + restaurant.is_favorite);
-  if (restaurant.is_favorite === 'true') {
+  if (restaurant.is_favorite === 'true' || restaurant.is_favorite === true ) {
     restFav.innerHTML = 'Favorite';
-   // document.getElementById('slider-control').classList.add('slideractive');
+    document.getElementById('slider-control').classList.add('slideractive');
     //fillRestaurantHoursHTML();
-  } else if (restaurant.is_favorite === 'false'){
+  } else if (restaurant.is_favorite === 'false' || restaurant.is_favorite === false){
    restFav.innerHTML = 'Favorite';
   } else {
     restFav.innerHTML = 'Make Favorite';
   }
 
-//TODO work on updating the toggle style onload of page
+//TODO work on updating the toggle style onload of page or use another icon
  
 
 
