@@ -112,7 +112,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     restFav.innerHTML = 'Make Favorite';
   }
 
-
+//TODO work on updating the toggle style onload of page
  
 
 

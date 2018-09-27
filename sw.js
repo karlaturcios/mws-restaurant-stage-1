@@ -37,8 +37,11 @@ self.addEventListener('install', function(event) {
       })
   );
 });
-
-
+//removing caching as recommended by tutor
+self.addEventListener('activate', (event) => {
+  console.log('activating only');
+});
+/*
 self.addEventListener('activate', event => {
   console.log('Activate new service worker to remove outdated caches');
   const currentCaches = [staticCacheName];
@@ -51,7 +54,7 @@ self.addEventListener('activate', event => {
       }));
     }).then(() => self.clients.claim())
   );
-});
+});*/
 /*
 //Update cache anything new or remove
 self.addEventListener('activate', function(event) {
@@ -73,19 +76,19 @@ self.addEventListener('activate', function(event) {
   );
 });*/
 
-/*
+
 //TODO We'll try this after adding update to server, this 
 //is for a request doesn't match anything in the cache, get it from the network, send it to the page & add it to the cache at the same time. 
 //Combining Fetch per circumstance
 self.addEventListener('fetch', function(event) {
   // Parse the URL:
   var requestURL = new URL(event.request.url);
-
+console.log('requestURL' + requestURL);
 
   // Routing for local URLs
   if (requestURL.origin == location.origin) {
     // Handle anything else but GET
-    if (request.method !== 'GET') { 
+    if (requestURL.method !== 'GET') { 
     return; 
   }
   event.respondWith(
@@ -110,11 +113,39 @@ self.addEventListener('fetch', function(event) {
       return caches.match('/offline.html');
     })
   );
-});*/
+});
+
+/*
+event.respondWith(
+  fetch(event.request).catch(function() {
+    return caches.match(event.request);
+  })
+);
 
 
 
+/*
 
+self.addEventListener('fetch', function(event) {
+  var request = event.request;
+  //Avoid caching POST events
+ if (request.method !== 'GET') { 
+   return; 
+ }
+ event.respondWith(
+  caches.open(staticCacheName).then(function(cache) {
+    return cache.match(event.request).then(function (response) {
+      return response || fetch(event.request).then(function(response) {
+        cache.put(event.request, response.clone());
+        return response;
+      });
+    });
+  })
+);
+});
+*/
+
+/*
 //Retrieve from cache, network or database
 self.addEventListener('fetch', function(event) {
   var request = event.request;
@@ -130,7 +161,7 @@ self.addEventListener('fetch', function(event) {
     })
   );
 });
-
+*/
 function fetchAndCache(url) {
   return fetch(url)
   .then(function(response) {
