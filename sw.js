@@ -106,14 +106,14 @@ console.log('requestURL' + requestURL);
   }
 
   // default pattern Cache, falling back to network
-  event.respondWith(
+  /*event.respondWith(
     caches.match(event.request).then(function(response) {
       return response || fetch(event.request);
     }).catch(function() {
       // If both fail, show a generic fallback:
       return caches.match('/offline.html');
     })
-  );
+  );*/
 });
 
 /*

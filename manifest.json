@@ -1,7 +1,7 @@
 {
     "name": "Restaurant Reviews",
     "short_name": "RestReviews",
-    "start_url": "/index.html",
+    "start_url": "index.html",
     "icons": [{
           "src": "img/touch/icon-128x128.png",
           "sizes": "128x128",
@@ -25,6 +25,7 @@
         }],
     "background_color": "#3700B3",
     "display": "standalone",
-    "theme_color": "#3700B3"
+    "theme_color": "#3700B3",
+    "scope": "/"
   }
   
