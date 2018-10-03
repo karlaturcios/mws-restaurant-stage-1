@@ -8,7 +8,20 @@ const ratingSelector = document.querySelector('#rating');
 const commentsInput = document.querySelector('#comments');
 const formz = document.querySelector('form');
 //let idReview = 0;
-// open database
+// to avoid multiple IDB's
+const dbPromise = idb.open('restaurants-reviews', 1, function(upgradeDb) {
+  console.log('making a new object store');
+  if (!upgradeDb.objectStoreNames.contains('firstOS')) {
+    upgradeDb.createObjectStore('restaurantz', {keyPath: 'id'});
+  }
+  if (!upgradeDb.objectStoreNames.contains('firstOS')) {
+    upgradeDb.createObjectStore('reviewz', {keyPath: 'id'});
+  }
+  if (!upgradeDb.objectStoreNames.contains('firstOS')) {
+    upgradeDb.createObjectStore('submittedReviews', {keyPath: 'id'});
+  }
+});
+/*
 var dbPromise = idb.open('restaurants-reviews', 13, function(upgradeDb) {
   switch (upgradeDb.oldVersion) {
     case 0:
@@ -25,7 +38,7 @@ var dbPromise = idb.open('restaurants-reviews', 13, function(upgradeDb) {
     upgradeDb.createObjectStore('submittedReviews', {keyPath: 'id'});
   }
 });
-
+*/
 
 
 /*
